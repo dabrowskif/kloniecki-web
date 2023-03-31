@@ -9,6 +9,7 @@ import HeroSection from "~/components/HeroSection";
 import ImageCarousel from "~/components/ImageCarousel";
 import Navbar from "~/components/Navbar";
 import TestimonialsSection from "~/components/TestimonialsSection";
+import Script from "next/script";
 
 const Home: NextPage = () => {
   return (
@@ -31,6 +32,11 @@ const Home: NextPage = () => {
         <link rel="canonical" href="https://www.kloniecki.pl" />
         <link rel="manifest" href="/manifest.json" />
         <link rel="icon" href="/favicon.ico" />
+        <link
+          href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.4/flowbite.min.css"
+          rel="stylesheet"
+        />
+
         <title>Kloniecki Ostopatia i Fizjoterapia Toruń</title>
       </Head>
       <Navbar />
@@ -55,6 +61,7 @@ const Home: NextPage = () => {
           referrerPolicy="no-referrer-when-downgrade"
         />
       </footer>
+      <Script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.4/flowbite.min.js" />
     </>
   );
 };
