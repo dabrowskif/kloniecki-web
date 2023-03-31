@@ -17,6 +17,7 @@
     "@trpc/next": "^10.18.0",
     "@trpc/react-query": "^10.18.0",
     "@trpc/server": "^10.18.0",
+    "aos": "^2.3.4",
     "flowbite": "^1.6.4",
     "flowbite-react": "^0.4.2",
     "install": "^0.13.0",
@@ -32,6 +33,7 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
+    "@types/aos": "^3.0.4",
     "@types/eslint": "^8.21.3",
     "@types/node": "^18.15.5",
     "@types/nodemailer": "^6.4.7",
