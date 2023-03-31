@@ -14,6 +14,7 @@ const HeroSection = () => {
       window.removeEventListener("scroll", () => {});
     };
   }, []);
+  console.log("test");
 
   return (
     <section id="strona-glowna">
