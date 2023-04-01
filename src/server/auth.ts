@@ -4,7 +4,7 @@ import {
   type NextAuthOptions,
   type DefaultSession,
 } from "next-auth";
-import DiscordProvider from "next-auth/providers/discord";
+import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { env } from "~/env.mjs";
 import { prisma } from "~/server/db";
@@ -44,19 +44,24 @@ export const authOptions: NextAuthOptions = {
       }
       return session;
     },
+    // eslint-disable-next-line @typescript-eslint/require-await
+    async signIn({ account, profile }) {
+      if (account?.provider === "google" && profile) {
+        return profile.email === "filip.daabrowski@gmail.com";
+      }
+      return false;
+    },
   },
   adapter: PrismaAdapter(prisma),
   providers: [
-    /**
-     * ...add more providers here.
-     *
-     * Most other providers require a bit more work than the Discord provider. For example, the
-     * GitHub provider requires you to add the `refresh_token_expires_in` field to the Account
-     * model. Refer to the NextAuth.js docs for the provider you want to use. Example:
-     *
-     * @see https://next-auth.js.org/providers/github
-     */
+    GoogleProvider({
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
+    }),
   ],
+  pages: {
+    signIn: "/kalendarz/zaloguj",
+  },
 };
 
 /**

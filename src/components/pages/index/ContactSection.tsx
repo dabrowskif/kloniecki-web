@@ -2,6 +2,8 @@
 import { useState } from "react";
 import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 import { api } from "~/utils/api";
+import Day from "~/components/pages/kalendarz/CalendarGridSecondary";
+import CalendarGridSecond from "../kalendarz/CalendarGridSecondary";
 
 const ContactSection = () => {
   const [formData, setFormData] = useState({
@@ -9,10 +11,13 @@ const ContactSection = () => {
     message: "",
     phoneNumber: "",
   });
+
   const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [formSuccess, setFormSuccess] = useState("");
   const [formError, setFormError] = useState("");
-  const { mutate: sendFormMail } = api.mailer.sendContactFormMail.useMutation({
+
+  const { mutate: sendInquiryForm } = api.inquiryForm.create.useMutation({
     onMutate: () => {
       setIsSubmitting(true);
     },
@@ -33,7 +38,7 @@ const ContactSection = () => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    sendFormMail(formData);
+    sendInquiryForm(formData);
   };
 
   const handleChange = (event: any) => {
@@ -42,13 +47,18 @@ const ContactSection = () => {
   };
 
   return (
-    <section id="kontakt">
-      <div className="grid grid-cols-1 gap-8 bg-gray-100 px-4 py-12  sm:px-6 md:grid-cols-2 md:px-10 lg:px-20    ">
+    <section id="kontakt" className="bg-gray-100 p-10">
+      <div className="mx-auto max-w-3xl text-center">
+        <h2 className="text-3xl font-semibold text-gray-800">
+          Skontaktuj się ze mną
+        </h2>
+        <p className="mt-4 text-gray-600">
+          Wypełnij formularz lub zapisz się na wizytę
+        </p>
+      </div>
+      <div className="grid grid-cols-1 gap-8 px-4 py-12  sm:px-6 md:grid-cols-2 md:px-10 lg:px-20">
         <div className="flex flex-col items-center justify-center space-y-4 align-middle">
           <div className="space-y-5">
-            <h2 className="mb-10 text-2xl font-semibold text-gray-800">
-              Skontaktuj się ze mną
-            </h2>
             <div className="flex items-center space-x-5">
               <FaPhoneAlt className="text-xl text-blue-700" />
               <p className="text-gray-700">+48781624414</p>
@@ -114,6 +124,7 @@ const ContactSection = () => {
                 id="message"
                 rows={3}
                 name="message"
+                required
                 onChange={handleChange}
                 className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                 placeholder="Zostaw wiadomość"
@@ -122,7 +133,7 @@ const ContactSection = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="mt-5 rounded-lg bg-blue-700 px-5  py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 sm:w-auto"
+              className="button-primary mt-2"
             >
               {isSubmitting ? (
                 <div className="flex">

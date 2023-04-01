@@ -61,7 +61,6 @@ const Home: NextPage = () => {
           referrerPolicy="no-referrer-when-downgrade"
         />
       </footer>
-      <Script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.4/flowbite.min.js" />
     </>
   );
 };

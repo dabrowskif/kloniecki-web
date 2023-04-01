@@ -5,3 +5,7 @@
 html {
   scroll-behavior: smooth;
 }
+
+.button-primary {
+  @apply rounded-sm border border-transparent bg-blue-700 px-5 py-2 text-center text-base font-medium text-white hover:bg-blue-600;
+}

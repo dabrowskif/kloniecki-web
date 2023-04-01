@@ -8,6 +8,7 @@ import { api } from "~/utils/api";
 
 import "~/styles/globals.css";
 import { useEffect } from "react";
+import Script from "next/script";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -18,9 +19,12 @@ const MyApp: AppType<{ session: Session | null }> = ({
   }, []);
 
   return (
-    <SessionProvider session={session}>
-      <Component {...pageProps} />
-    </SessionProvider>
+    <>
+      <SessionProvider session={session}>
+        <Component {...pageProps} />
+      </SessionProvider>
+      <Script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.4/flowbite.min.js" />
+    </>
   );
 };
 

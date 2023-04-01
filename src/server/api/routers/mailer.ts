@@ -2,6 +2,8 @@ import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { useMailService } from "~/server/lib/nodemailer";
+import { api } from "~/utils/api";
+import { appRouter } from "../root";
 
 export const mailerRouter = createTRPCRouter({
   sendContactFormMail: publicProcedure
@@ -28,7 +30,4 @@ export const mailerRouter = createTRPCRouter({
         } <br/> <br /> ${input.message} `,
       });
     }),
-  getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.example.findMany();
-  }),
 });
