@@ -1,15 +1,15 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import AboutSection from "~/components/AboutSection";
-import ContactSection from "~/components/ContactSection";
-import Cta from "~/components/Cta";
-import FaqSection from "~/components/FaqSection";
-import ServicesSection from "~/components/ServicesSection";
-import HeroSection from "~/components/HeroSection";
-import ImageCarousel from "~/components/ImageCarousel";
-import Navbar from "~/components/Navbar";
-import TestimonialsSection from "~/components/TestimonialsSection";
+import AboutSection from "~/components/pages/index/AboutSection";
 import Script from "next/script";
+import ContactSection from "~/components/pages/index/ContactSection";
+import Cta from "~/components/pages/index/Cta";
+import FaqSection from "~/components/pages/index/FaqSection";
+import HeroSection from "~/components/pages/index/HeroSection";
+import ImageCarousel from "~/components/pages/index/ImageCarousel";
+import ServicesSection from "~/components/pages/index/ServicesSection";
+import TestimonialsSection from "~/components/pages/index/TestimonialsSection";
+import Navbar from "~/components/general/Navbar";
 
 const Home: NextPage = () => {
   return (
