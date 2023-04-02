@@ -1,3 +1,5 @@
+import dayjs from "./dayjs";
+
 export type Day = "Poniedziałek" | "Wtorek" | "Środa" | "Czwartek" | "Piątek";
 
 export const daysOfWeek: Day[] = [
@@ -87,6 +89,9 @@ export interface Range {
   from: string;
   to: string;
 }
+
+export type RangeWithDate = Range & { date: string };
+
 export const filterUnnecessaryTimeRanges = (
   currenTimeRanges: Range[],
   allTimeRanges: Range[]
@@ -126,11 +131,14 @@ const getMinAndMaxTimeRanges = (timeRanges: Range[]) => {
   return { minTimeRange, maxTimeRange };
 };
 
-export const areDatesEqual = (
-  date1: Range & { date: string },
-  date2: Range & { date: string }
-) => {
+export const areDatesEqual = (date1: RangeWithDate, date2: RangeWithDate) => {
   date1.date === date2.date &&
     date1.from === date2.from &&
     date1.to === date2.to;
+};
+
+export const isPastDate = (date: RangeWithDate) => {
+  const now = dayjs(new Date()).toDate();
+  const _date = dayjs(date.date).toDate();
+  return now > _date;
 };

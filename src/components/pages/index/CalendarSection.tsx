@@ -7,6 +7,7 @@ import {
   daysOfWeek,
   timeRanges,
   filterUnnecessaryTimeRanges,
+  isPastDate,
 } from "~/utils/calendar";
 import dayjs, { DateFormats } from "~/utils/dayjs";
 
@@ -133,13 +134,14 @@ const CalendarSection = () => {
                         date.from === selectedDate.from &&
                         date.to === selectedDate.to
                     );
+                    isPastDate(selectedDate);
 
                     return (
                       <button
                         name={`Wizyta w ${day} od ${timeRange.from} do ${timeRange.to}`}
                         key={j}
                         className={`transition-colors duration-150 ${
-                          !reservedVisitDate
+                          !reservedVisitDate || isPastDate(reservedVisitDate)
                             ? " bg-gray-100 text-gray-400 "
                             : isFetching
                             ? "bg-loading"
@@ -149,7 +151,11 @@ const CalendarSection = () => {
                             ? "bg-blue-700 text-white"
                             : "bg-white text-gray-900"
                         }`}
-                        disabled={isFetching || !reservedVisitDate}
+                        disabled={
+                          isFetching ||
+                          !reservedVisitDate ||
+                          isPastDate(reservedVisitDate)
+                        }
                         onClick={() => {
                           setReservationDate(selectedDate);
                         }}
