@@ -9,7 +9,7 @@ import ImageCarousel from "~/components/pages/index/ImageCarousel";
 import ServicesSection from "~/components/pages/index/ServicesSection";
 import TestimonialsSection from "~/components/pages/index/TestimonialsSection";
 import Navbar from "~/components/general/Navbar";
-import CalendarSection from "~/components/pages/index/CalendarSection";
+import CalendarSection from "~/components/pages/index/CalendarSection/CalendarSection";
 
 const Home: NextPage = () => {
   return (

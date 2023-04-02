@@ -133,7 +133,7 @@ const ContactSection = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="button-primary mt-2"
+              className="button-primary mt-2 px-5"
             >
               {isSubmitting ? (
                 <div className="flex">

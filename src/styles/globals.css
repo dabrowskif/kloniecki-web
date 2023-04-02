@@ -7,7 +7,15 @@ html {
 }
 
 .button-primary {
-  @apply rounded-sm border border-transparent bg-blue-700 px-5 py-2 text-center text-base font-medium text-white hover:bg-blue-600;
+  @apply rounded-sm border border-transparent bg-blue-700 py-2 text-center text-base font-medium text-white hover:bg-blue-600;
+}
+
+.button-primary-disabled {
+  @apply rounded-sm border border-transparent  bg-blue-200 py-2 text-center text-base font-medium text-white hover:bg-blue-300;
+}
+
+.focusable {
+  @apply focus:outline-none focus:ring-2 focus:ring-blue-700;
 }
 
 .bg-loading {

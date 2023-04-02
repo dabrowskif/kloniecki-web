@@ -2,6 +2,13 @@ import dayjs from "./dayjs";
 
 export type Day = "Poniedziałek" | "Wtorek" | "Środa" | "Czwartek" | "Piątek";
 
+export interface TimeRange {
+  from: string;
+  to: string;
+}
+
+export type DateWithTime = { date: string } & TimeRange;
+
 export const daysOfWeek: Day[] = [
   "Poniedziałek",
   "Wtorek",
@@ -10,7 +17,7 @@ export const daysOfWeek: Day[] = [
   "Piątek",
 ];
 
-export const timeRanges: Range[] = [
+export const timeRanges: TimeRange[] = [
   {
     from: "8:30",
     to: "9:00",
@@ -85,21 +92,14 @@ export const timeRanges: Range[] = [
   },
 ];
 
-export interface Range {
-  from: string;
-  to: string;
-}
-
-export type RangeWithDate = Range & { date: string };
-
 export const filterUnnecessaryTimeRanges = (
-  currenTimeRanges: Range[],
-  allTimeRanges: Range[]
-): Range[] => {
-  const necessaryTimeRanges: Range[] = [];
+  currentTimeRanges: TimeRange[],
+  allTimeRanges: TimeRange[]
+): TimeRange[] => {
+  const necessaryTimeRanges: TimeRange[] = [];
 
   const { minTimeRange, maxTimeRange } =
-    getMinAndMaxTimeRanges(currenTimeRanges);
+    getMinAndMaxTimeRanges(currentTimeRanges);
 
   for (const timeRange of allTimeRanges) {
     const { from, to } = timeRangeToNumber(timeRange);
@@ -111,14 +111,14 @@ export const filterUnnecessaryTimeRanges = (
   return necessaryTimeRanges;
 };
 
-const timeRangeToNumber = (timeRange: Range) => {
+const timeRangeToNumber = (timeRange: TimeRange) => {
   return {
     from: +timeRange.from.split(":").join(""),
     to: +timeRange.to.split(":").join(""),
   };
 };
 
-const getMinAndMaxTimeRanges = (timeRanges: Range[]) => {
+const getMinAndMaxTimeRanges = (timeRanges: TimeRange[]) => {
   let minTimeRange = 2400;
   let maxTimeRange = 0;
 
@@ -131,13 +131,13 @@ const getMinAndMaxTimeRanges = (timeRanges: Range[]) => {
   return { minTimeRange, maxTimeRange };
 };
 
-export const areDatesEqual = (date1: RangeWithDate, date2: RangeWithDate) => {
+export const areDatesEqual = (date1: DateWithTime, date2: DateWithTime) => {
   date1.date === date2.date &&
     date1.from === date2.from &&
     date1.to === date2.to;
 };
 
-export const isPastDate = (date: RangeWithDate) => {
+export const isPastDate = (date: DateWithTime) => {
   const now = dayjs(new Date()).toDate();
   const _date = dayjs(date.date).toDate();
   return now > _date;

@@ -4,6 +4,7 @@ import { type GetServerSidePropsContext } from "next/types";
 import React from "react";
 import Footer from "~/components/general/Footer";
 import Navbar from "~/components/general/Navbar";
+import { env } from "~/env.mjs";
 import { getServerAuthSession } from "~/server/auth";
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
@@ -35,13 +36,13 @@ const Login = () => {
               onClick={() =>
                 void signIn("google", {
                   redirect: true,
-                  callbackUrl: "http://localhost:3000/kalendarz",
+                  callbackUrl: `${env.NEXTAUTH_URL}/kalendarz`,
                 })
               }
             >
               <Image
                 className="me-2"
-                src="/google.png"
+                src="/icons/google-icon.png"
                 width="30"
                 height="30"
                 alt="Google logo"
