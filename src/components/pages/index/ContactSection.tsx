@@ -2,8 +2,8 @@
 import { useState } from "react";
 import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 import { api } from "~/utils/api";
-import Day from "~/components/pages/kalendarz/CalendarGridSecondary";
-import CalendarGridSecond from "../kalendarz/CalendarGridSecondary";
+import Day from "~/components/pages/kalendarz/CalendarGrid";
+import CalendarGridSecond from "../kalendarz/CalendarGrid";
 
 const ContactSection = () => {
   const [formData, setFormData] = useState({

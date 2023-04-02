@@ -8,7 +8,7 @@ interface DateRange {
   end: string;
 }
 
-const CalendarGridSecond = () => {
+const CalendarGrid = () => {
   const ctx = api.useContext();
 
   const [currentWeek, setCurrentWeek] = useState<DateRange>({
@@ -160,7 +160,7 @@ const CalendarGridSecond = () => {
   );
 };
 
-export default CalendarGridSecond;
+export default CalendarGrid;
 
 export type Day = "Poniedziałek" | "Wtorek" | "Środa" | "Czwartek" | "Piątek";
 

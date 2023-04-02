@@ -4,7 +4,7 @@ import Script from "next/script";
 import React from "react";
 import Footer from "~/components/general/Footer";
 import Navbar from "~/components/general/Navbar";
-import CalendarGridSecond from "~/components/pages/kalendarz/CalendarGridSecondary";
+import CalendarGridSecond from "~/components/pages/kalendarz/CalendarGrid";
 import { getServerAuthSession } from "~/server/auth";
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
@@ -25,11 +25,6 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 }
 
 const Calendar: NextPage = () => {
-  const { data, status } = useSession();
-
-  const hanndleDateSelect = (value: any) => {
-    console.log(value);
-  };
   return (
     <>
       <Navbar />
@@ -44,7 +39,7 @@ const Calendar: NextPage = () => {
           <h2 className="sm:text-1xl my-10 text-center text-lg tracking-tight md:text-2xl lg:text-3xl">
             Najnwosze zapytania
           </h2>
-          <CalendarGridSecond onDateSelect={hanndleDateSelect} />
+          <CalendarGridSecond />
           <div className="mt-20 flex justify-center">
             <button className="button-primary">Wyloguj</button>
           </div>
