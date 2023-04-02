@@ -32,7 +32,7 @@ const Login = () => {
         <div className="flex h-full w-full justify-center">
           <div className="m-auto">
             <button
-              className="button-primary flex items-center"
+              className="button-primary flex items-center px-20"
               onClick={() =>
                 void signIn("google", {
                   redirect: true,
