@@ -2,17 +2,17 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { api } from "~/utils/api";
 import {
-  type Range,
   daysOfWeek,
   timeRanges,
   filterUnnecessaryTimeRanges,
+  type TimeRange,
 } from "~/utils/calendar";
 import dayjs, { DateFormats } from "~/utils/dayjs";
 
 const CalendarGrid = () => {
   const ctx = api.useContext();
 
-  const [currentWeek, setCurrentWeek] = useState<Range>({
+  const [currentWeek, setCurrentWeek] = useState<TimeRange>({
     from: dayjs().startOf("week").format(DateFormats.DateFormatWithYear),
     to: dayjs().endOf("week").format(DateFormats.DateFormatWithYear),
   });
