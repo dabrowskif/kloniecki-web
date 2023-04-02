@@ -28,7 +28,6 @@ const WeekPagination = (props: IWeekPaginationProps) => {
         }}
       >
         <AiOutlineArrowLeft size={20} />
-        {/* <img src="AiOutlineArrowLeft" /> */}
       </button>
       <h2>
         {currentWeek.from} - {currentWeek.to}
