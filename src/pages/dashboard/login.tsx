@@ -33,7 +33,12 @@ const Login = () => {
           <div className="m-auto">
             <button
               className="button-primary flex items-center"
-              onClick={() => void signIn("google")}
+              onClick={() =>
+                void signIn("google", {
+                  redirect: true,
+                  callbackUrl: `${env.NEXT_PUBLIC_FRONTEND_URL}/dashboard`,
+                })
+              }
             >
               <Image
                 className="me-2"
