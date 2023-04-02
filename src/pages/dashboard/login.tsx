@@ -36,7 +36,7 @@ const Login = () => {
               onClick={() =>
                 void signIn("google", {
                   redirect: true,
-                  callbackUrl: env.NEXTAUTH_URL,
+                  callbackUrl: env.NEXT_PUBLIC_FRONTEND_URL,
                 })
               }
             >
