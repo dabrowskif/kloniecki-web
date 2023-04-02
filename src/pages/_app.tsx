@@ -4,11 +4,13 @@ import { SessionProvider } from "next-auth/react";
 
 import AOS from "aos";
 import "aos/dist/aos.css";
+import "react-toastify/dist/ReactToastify.css";
 import { api } from "~/utils/api";
 
 import "~/styles/globals.css";
 import { useEffect } from "react";
 import Script from "next/script";
+import { ToastContainer } from "react-toastify";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -22,6 +24,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
     <>
       <SessionProvider session={session}>
         <Component {...pageProps} />
+        <ToastContainer />
       </SessionProvider>
       <Script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.4/flowbite.min.js" />
     </>
