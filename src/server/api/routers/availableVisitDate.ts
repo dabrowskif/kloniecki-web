@@ -75,7 +75,6 @@ export const availableVisitDateRouter = createTRPCRouter({
         input.dateTo,
         DateFormats.DateFormatWithYear
       ).toDate();
-
       try {
         const availableVisitDates = await prisma.availableVisitDate.findMany({
           where: {

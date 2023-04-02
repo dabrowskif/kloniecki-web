@@ -13,7 +13,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   if (!session?.user) {
     return {
       redirect: {
-        destination: "/kalendarz/zaloguj",
+        destination: "/dashboard/login",
         permanent: false,
       },
     };
@@ -24,7 +24,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   };
 }
 
-const Calendar: NextPage = () => {
+const Dashboard: NextPage = () => {
   return (
     <>
       <Navbar />
@@ -50,4 +50,4 @@ const Calendar: NextPage = () => {
   );
 };
 
-export default Calendar;
+export default Dashboard;

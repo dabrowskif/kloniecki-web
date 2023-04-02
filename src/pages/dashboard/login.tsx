@@ -1,5 +1,4 @@
 import { signIn } from "next-auth/react";
-import { redirect } from "next/dist/server/api-utils";
 import Image from "next/image";
 import { type GetServerSidePropsContext } from "next/types";
 import React from "react";
@@ -13,7 +12,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   if (session?.user) {
     return {
       redirect: {
-        destination: "/kalendarz",
+        destination: "/dashboard",
         permanent: false,
       },
     };

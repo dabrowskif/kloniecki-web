@@ -56,7 +56,7 @@ const ContactSection = () => {
           Wypełnij formularz lub zapisz się na wizytę
         </p>
       </div>
-      <div className="grid grid-cols-1 gap-8 px-4 py-12  sm:px-6 md:grid-cols-2 md:px-10 lg:px-20">
+      <div className="grid grid-cols-1 gap-8 px-4 pt-12  sm:px-6 md:grid-cols-2 md:px-10 lg:px-20">
         <div className="flex flex-col items-center justify-center space-y-4 align-middle">
           <div className="space-y-5">
             <div className="flex items-center space-x-5">
@@ -77,7 +77,7 @@ const ContactSection = () => {
           </div>
         </div>
         <div className="flex flex-col items-center justify-center space-y-4 align-middle">
-          <form onSubmit={handleSubmit} className="mb-5">
+          <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-5">
               <div className="mb-6">
                 <label

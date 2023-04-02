@@ -1,7 +1,6 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import AboutSection from "~/components/pages/index/AboutSection";
-import Script from "next/script";
 import ContactSection from "~/components/pages/index/ContactSection";
 import Cta from "~/components/pages/index/Cta";
 import FaqSection from "~/components/pages/index/FaqSection";
@@ -10,6 +9,7 @@ import ImageCarousel from "~/components/pages/index/ImageCarousel";
 import ServicesSection from "~/components/pages/index/ServicesSection";
 import TestimonialsSection from "~/components/pages/index/TestimonialsSection";
 import Navbar from "~/components/general/Navbar";
+import CalendarSection from "~/components/pages/index/CalendarSection";
 
 const Home: NextPage = () => {
   return (
@@ -49,6 +49,7 @@ const Home: NextPage = () => {
         <ImageCarousel />
         <FaqSection />
         <ContactSection />
+        <CalendarSection />
       </main>
       <footer>
         <iframe

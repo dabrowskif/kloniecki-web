@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import Image from "next/image";
+import Link from "next/link";
 import React, { useEffect } from "react";
 
 const HeroSection = () => {
@@ -14,7 +15,6 @@ const HeroSection = () => {
       window.removeEventListener("scroll", () => {});
     };
   }, []);
-  console.log("test");
 
   return (
     <section id="strona-glowna">

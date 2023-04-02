@@ -1,28 +1,29 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { api } from "~/utils/api";
+import {
+  type Range,
+  daysOfWeek,
+  timeRanges,
+  filterUnnecessaryTimeRanges,
+} from "~/utils/calendar";
 import dayjs, { DateFormats } from "~/utils/dayjs";
-
-interface DateRange {
-  start: string;
-  end: string;
-}
 
 const CalendarGrid = () => {
   const ctx = api.useContext();
 
-  const [currentWeek, setCurrentWeek] = useState<DateRange>({
-    start: dayjs().startOf("week").format(DateFormats.DateFormatWithYear),
-    end: dayjs().endOf("week").format(DateFormats.DateFormatWithYear),
+  const [currentWeek, setCurrentWeek] = useState<Range>({
+    from: dayjs().startOf("week").format(DateFormats.DateFormatWithYear),
+    to: dayjs().endOf("week").format(DateFormats.DateFormatWithYear),
   });
 
   const { data: availableVisitDates, isFetching } =
     api.availableVisitDate.findMany.useQuery({
-      dateFrom: currentWeek.start,
-      dateTo: currentWeek.end,
+      dateFrom: currentWeek.from,
+      dateTo: currentWeek.to,
     });
 
-  const { mutate: createAvailableVisitDate } =
+  const { mutate: createAvailableVisitDate, isLoading: isCreating } =
     api.availableVisitDate.create.useMutation({
       onMutate: () => {
         void availableVisitDates;
@@ -40,7 +41,7 @@ const CalendarGrid = () => {
       },
     });
 
-  const { mutate: deleteAvailableVisitDate, isLoading } =
+  const { mutate: deleteAvailableVisitDate, isLoading: isDeleting } =
     api.availableVisitDate.delete.useMutation({
       onMutate: () => {
         void availableVisitDates;
@@ -60,11 +61,11 @@ const CalendarGrid = () => {
 
   const changeCurrentWeek = (weekOffset: number): void => {
     setCurrentWeek((prevState) => ({
-      start: dayjs(prevState.start)
+      from: dayjs(prevState.from)
         .add(weekOffset, "week")
         .startOf("week")
         .format(DateFormats.DateFormatWithYear),
-      end: dayjs(prevState.end)
+      to: dayjs(prevState.to)
         .add(weekOffset, "week")
         .endOf("week")
         .format(DateFormats.DateFormatWithYear),
@@ -83,7 +84,7 @@ const CalendarGrid = () => {
             &lt; Poprzedni tydzień
           </button>
           <h2>
-            {currentWeek.start} - {currentWeek.end}
+            {currentWeek.from} - {currentWeek.to}
           </h2>
           <button
             onClick={() => {
@@ -95,20 +96,20 @@ const CalendarGrid = () => {
         </div>
         <div
           className={`grid grid-cols-5 divide-x border shadow-lg ${
-            isLoading ? "bg-loading" : ""
+            isFetching ? "bg-loading" : ""
           }`}
         >
           {daysOfWeek.map((day, i) => (
             <div key={i} className="flex flex-col ">
               <div className="p-2 text-center text-blue-700">
                 {day}{" "}
-                {dayjs(currentWeek.start)
+                {dayjs(currentWeek.from)
                   .day(i + 1)
                   .format(DateFormats.DateFormatWithoutYear)}
               </div>
               <hr />
               {timeRanges.map((timeRange, j) => {
-                const date = dayjs(currentWeek.start)
+                const date = dayjs(currentWeek.from)
                   .day(i + 1)
                   .format(DateFormats.DateFormatWithYear);
 
@@ -132,11 +133,11 @@ const CalendarGrid = () => {
                     className={`cursor-pointer transition-colors duration-150 ${
                       availableVisitDate
                         ? "bg-blue-700 text-white"
-                        : isLoading
+                        : isFetching
                         ? "bg-loading"
                         : "bg-white text-gray-900"
                     }`}
-                    disabled={isLoading}
+                    disabled={isFetching || isCreating || isDeleting}
                     onClick={() => {
                       if (availableVisitDate) {
                         deleteAvailableVisitDate({ id: availableVisitDate.id });
@@ -161,88 +162,3 @@ const CalendarGrid = () => {
 };
 
 export default CalendarGrid;
-
-export type Day = "Poniedziałek" | "Wtorek" | "Środa" | "Czwartek" | "Piątek";
-
-const daysOfWeek: Day[] = [
-  "Poniedziałek",
-  "Wtorek",
-  "Środa",
-  "Czwartek",
-  "Piątek",
-];
-
-const timeRanges = [
-  {
-    from: "8:30",
-    to: "9:00",
-  },
-  {
-    from: "9:00",
-    to: "9:30",
-  },
-  {
-    from: "9:30",
-    to: "10:00",
-  },
-  {
-    from: "10:00",
-    to: "10:30",
-  },
-  {
-    from: "10:30",
-    to: "11:00",
-  },
-  {
-    from: "11:00",
-    to: "11:30",
-  },
-  {
-    from: "11:30",
-    to: "12:00",
-  },
-  {
-    from: "12:00",
-    to: "12:30",
-  },
-  {
-    from: "12:30",
-    to: "13:00",
-  },
-  {
-    from: "13:00",
-    to: "13:30",
-  },
-  {
-    from: "13:30",
-    to: "14:00",
-  },
-  {
-    from: "14:00",
-    to: "14:30",
-  },
-  {
-    from: "14:30",
-    to: "15:00",
-  },
-  {
-    from: "15:00",
-    to: "15:30",
-  },
-  {
-    from: "15:30",
-    to: "16:00",
-  },
-  {
-    from: "16:00",
-    to: "16:30",
-  },
-  {
-    from: "16:30",
-    to: "17:00",
-  },
-  {
-    from: "17:00",
-    to: "17:30",
-  },
-];

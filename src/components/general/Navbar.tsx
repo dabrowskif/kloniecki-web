@@ -118,10 +118,10 @@ const NavbarLink = (
   return (
     <li>
       <a
-        href={`#${scrollId}`}
+        // href={`#${scrollId}`}
         onClick={() => {
           setSelectedUrlId(scrollId);
-          // scrollToElement(scrollId);
+          scrollToElement(scrollId);
         }}
         className={`${
           selectedUrlId === scrollId ? "text-blue-700" : "text-gray-700"
