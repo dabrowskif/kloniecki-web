@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import { useSession } from "next-auth/react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { useGoogleCalendarApiClient } from "~/client/clients/googleCalendarClient";
 import { api } from "~/utils/api";
 import {
   daysOfWeek,
@@ -11,11 +13,15 @@ import dayjs, { DateFormats } from "~/utils/dayjs";
 
 const CalendarGrid = () => {
   const ctx = api.useContext();
+  const { data, status } = useSession();
+  const googleCalendarApiClient = useGoogleCalendarApiClient();
 
   const [currentWeek, setCurrentWeek] = useState<TimeRange>({
     from: dayjs().startOf("week").format(DateFormats.DateFormatWithYear),
     to: dayjs().endOf("week").format(DateFormats.DateFormatWithYear),
   });
+
+  const [googleCalendarEvents, setGoogleCalendarEvents] = useState<any>([]);
 
   const { data: availableVisitDates, isFetching } =
     api.availableVisitDate.findMany.useQuery({
@@ -73,6 +79,30 @@ const CalendarGrid = () => {
     }));
   };
 
+  useEffect(() => {
+    if (
+      data &&
+      status === "authenticated" &&
+      googleCalendarApiClient !== undefined
+    ) {
+      console.log(data?.user.google_access_token);
+      const timeMin = dayjs()
+        .startOf("week")
+        .format(DateFormats.GoogleCalendarApi);
+      const timeMax = dayjs()
+        .endOf("week")
+        .format(DateFormats.GoogleCalendarApi);
+      void googleCalendarApiClient
+        .get(`/events?timeMin=${timeMin}&timeMax=${timeMax}`, {
+          headers: {
+            Authorization: `Bearer ${data?.user.google_access_token ?? ""}`,
+          },
+        })
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        .then((res) => setGoogleCalendarEvents(res.data?.items));
+    }
+  }, [status, data, googleCalendarApiClient]);
+  console.log(googleCalendarEvents);
   return (
     <div className="justify-content-center flex flex-col items-center">
       <div className="w-9/12 ">
@@ -101,7 +131,7 @@ const CalendarGrid = () => {
           }`}
         >
           {daysOfWeek.map((day, i) => (
-            <div key={i} className="flex flex-col ">
+            <div key={i} className="flex flex-col">
               <div className="p-2 text-center text-blue-700">
                 {day}{" "}
                 {dayjs(currentWeek.from)
@@ -127,12 +157,32 @@ const CalendarGrid = () => {
                     date.to === selectedDate.to
                 );
 
+                const mappedEvents = googleCalendarEvents?.map((event: any) => {
+                  return {
+                    start: event?.start?.dateTime,
+                    end: event?.start?.dateTime,
+                    summary: event?.summary,
+                  };
+                });
+
+                const start = mappedEvents[0]?.start;
+                const gDate = dayjs(start).format("YYYY-MM-DD");
+                const end = mappedEvents[0]?.end;
+                const startTime = dayjs(start).format("HH:mm");
+                const endTime = dayjs(end).format("HH:mm");
+
+                console.log(gDate, startTime, endTime);
+                console.log(availableVisitDate);
                 return (
                   <button
                     name={`Wizyta w ${day} od ${timeRange.from} do ${timeRange.to}`}
                     key={j}
                     className={`transition-colors duration-150 ${
-                      availableVisitDate?.visitReservation?.id
+                      selectedDate.date === gDate &&
+                      (selectedDate?.from === startTime ||
+                        selectedDate?.to === endTime)
+                        ? "bg-red-500 text-gray-900"
+                        : availableVisitDate?.visitReservation?.id
                         ? "bg-green-400 text-white"
                         : availableVisitDate
                         ? "bg-blue-700 text-white"

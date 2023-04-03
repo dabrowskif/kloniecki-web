@@ -1,5 +1,6 @@
 import { type GetServerSidePropsContext, type NextPage } from "next";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
+
 import Script from "next/script";
 import React from "react";
 import Footer from "~/components/general/Footer";
@@ -41,7 +42,19 @@ const Dashboard: NextPage = () => {
           </h2>
           <CalendarGrid />
           <div className="mt-20 flex justify-center">
-            <button className="button-primary">Wyloguj</button>
+            <button
+              className="button-primary px-10"
+              onClick={() => void signOut()}
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
+              // onClick={async () => {
+              //   // void test();
+              //   await fetch("http://localhost:3000/api/googletest")
+              //     .then((res) => res.json())
+              //     .then((data) => console.log(data));
+              // }}
+            >
+              Wyloguj
+            </button>
           </div>
         </div>
       </main>
