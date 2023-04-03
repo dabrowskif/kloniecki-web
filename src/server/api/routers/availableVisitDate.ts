@@ -82,6 +82,7 @@ export const availableVisitDateRouter = createTRPCRouter({
               gte: new Date(dateFrom),
               lte: new Date(dateTo),
             },
+            visitReservation: null,
           },
         });
 

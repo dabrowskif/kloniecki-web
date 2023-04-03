@@ -12,15 +12,29 @@ export const inquiryFormRouter = createTRPCRouter({
         email: z.string(),
         phoneNumber: z.string().optional(),
         message: z.string(),
-        day: z.string().optional(),
-        timeInterval: z.string().optional(),
       })
     )
     .mutation(async ({ input }) => {
-      try {
-        const mailService = useMailService();
-        await mailService.sendMail({
-          to: "filip@podhash.com",
+      const mailService = useMailService();
+
+      await prisma.inquiryForm
+        .create({
+          data: {
+            email: input.email,
+            phoneNumber: input.phoneNumber,
+            message: input.message,
+          },
+        })
+        .catch((e: unknown) => {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Wystąpił nieoczekiwany błąd",
+          });
+        });
+
+      await mailService
+        .sendMail({
+          to: "filip.daabrowski@gmail.com",
           from: "KlonieckiWeb filip.dabrowski@protonmail.com",
           subject: `Nowe zapytanie od ${input.email}`,
           text: `Otrzymałeś nowe zapytanie od ${input.email}  Numer telefonu:${
@@ -31,20 +45,7 @@ export const inquiryFormRouter = createTRPCRouter({
           }</a> <br /> Numer telefonu: ${
             input.phoneNumber ? input.phoneNumber : ""
           } <br/> <br /> ${input.message} `,
-        });
-
-        await prisma.inquiryForm.create({
-          data: {
-            email: input.email,
-            phoneNumber: input.phoneNumber,
-            message: input.message,
-          },
-        });
-      } catch (e) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Wystąpił nieoczekiwany błąd",
-        });
-      }
+        })
+        .catch((e) => console.log(e));
     }),
 });

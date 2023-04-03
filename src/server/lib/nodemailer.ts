@@ -30,8 +30,7 @@ class MailService {
     try {
       await this.mailClient.sendMail(options);
     } catch (error) {
-      console.log(error);
-      throw new EmailServiceError(
+      throw new MailServiceError(
         "There was an error while sending an email. Please try again later.",
         { error }
       );
@@ -42,7 +41,7 @@ class MailService {
 const mailService = new MailService();
 export const useMailService = () => mailService;
 
-class EmailServiceError extends Error {
+class MailServiceError extends Error {
   private statusCode: number;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

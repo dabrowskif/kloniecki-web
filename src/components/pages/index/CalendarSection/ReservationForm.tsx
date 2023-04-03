@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { api } from "~/utils/api";
 
 interface IReservationFormProps {
   selectedReservationDate:
@@ -9,10 +10,25 @@ interface IReservationFormProps {
 const ReservationForm = (props: IReservationFormProps) => {
   const { selectedReservationDate } = props;
 
+  const [formSuccess, setFormSuccess] = useState("");
+  const [formError, setFormError] = useState("");
+
+  const { mutate: createVisitReservation, isLoading: isSubmitting } =
+    api.visitReservation.create.useMutation({
+      onSuccess: () => {
+        setFormError("");
+        setFormSuccess("Pomyślnie wysłano wiadomość!");
+      },
+      onError: (e) => {
+        setFormSuccess("");
+        setFormError(e.message);
+      },
+    });
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log({ ...formData, selectedReservationDate });
-    // sendInquiryForm(formData);
+
+    createVisitReservation({ ...formData, date: selectedReservationDate! });
   };
 
   const handleChange = (event: any) => {
@@ -20,19 +36,16 @@ const ReservationForm = (props: IReservationFormProps) => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
   };
 
-  const [formSuccess, setFormSuccess] = useState("");
-  const [formError, setFormError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
   const [formData, setFormData] = useState({
     email: "",
     message: "",
     phoneNumber: "",
+    name: "",
   });
 
   return (
     <div className="mt-10 w-7/12">
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="mb-5">
         <div className="grid grid-cols-2 gap-5">
           <div className="mb-6">
             <label
@@ -48,7 +61,7 @@ const ReservationForm = (props: IReservationFormProps) => {
               name="name"
               required
               className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-              // placeholder=""
+              placeholder="Imię i nazwisko"
             />
           </div>
           <div className="mb-6">
@@ -73,7 +86,7 @@ const ReservationForm = (props: IReservationFormProps) => {
               htmlFor="email"
               className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
             >
-              Email
+              Email *
             </label>
             <input
               type="email"
@@ -90,20 +103,19 @@ const ReservationForm = (props: IReservationFormProps) => {
               htmlFor="date"
               className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
             >
-              Data
+              Data *
             </label>
             <input
               type="text"
               id="date"
               name="date"
               value={
-                selectedReservationDate &&
-                `${selectedReservationDate.date} od ${selectedReservationDate.from} do ${selectedReservationDate.to} `
+                selectedReservationDate
+                  ? `${selectedReservationDate.date} od ${selectedReservationDate.from} do ${selectedReservationDate.to}`
+                  : ""
               }
-              // value={selectedReservationDate}
+              onChange={() => {}}
               className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-              // disabled
-              readOnly={true}
               required
             />
           </div>

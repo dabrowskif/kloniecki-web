@@ -61,7 +61,7 @@ const ContactSection = () => {
           <div className="space-y-5">
             <div className="flex items-center space-x-5">
               <FaPhoneAlt className="text-xl text-blue-700" />
-              <p className="text-gray-700">+48781624414</p>
+              <p className="text-gray-700">+48 781-624-414</p>
             </div>
             <div className="flex items-center space-x-5">
               <FaEnvelope className="text-xl text-blue-700" />
@@ -84,7 +84,7 @@ const ContactSection = () => {
                   htmlFor="email"
                   className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  Email
+                  Email *
                 </label>
                 <input
                   type="email"
@@ -118,7 +118,7 @@ const ContactSection = () => {
                 htmlFor="message"
                 className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
               >
-                Wiadomość
+                Wiadomość *
               </label>
               <textarea
                 id="message"

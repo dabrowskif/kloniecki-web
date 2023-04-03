@@ -75,10 +75,13 @@ const CalendarSection = () => {
               ))}
             </div>
           ) : (
-            <p className="text-center">
-              Nie udostępniłem jeszcze planu na ten tydzień. Mozesz skontaktować
-              się ze mną osobiście, korzystając z formularza wyzej.
-            </p>
+            <>
+              <p className="text-center text-xl">Brak wolnych terminów.</p>
+              <p className="text-center">
+                Mozesz skontaktować się ze mną osobiście, korzystając z
+                formularza powyzej.
+              </p>
+            </>
           )}
         </div>
         <ReservationForm selectedReservationDate={selectedReservationDate} />
