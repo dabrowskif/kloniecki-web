@@ -7,22 +7,22 @@ import Navbar from "~/components/general/Navbar";
 import CalendarGridSecond from "~/components/pages/kalendarz/CalendarGrid";
 import { getServerAuthSession } from "~/server/auth";
 
-export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-  const session = await getServerAuthSession(ctx);
+// export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+//   const session = await getServerAuthSession(ctx);
 
-  if (!session?.user) {
-    return {
-      redirect: {
-        destination: "/dashboard/login",
-        permanent: false,
-      },
-    };
-  }
+//   if (!session?.user) {
+//     return {
+//       redirect: {
+//         destination: "/dashboard/login",
+//         permanent: false,
+//       },
+//     };
+//   }
 
-  return {
-    props: {},
-  };
-}
+//   return {
+//     props: {},
+//   };
+// }
 
 const Dashboard: NextPage = () => {
   return (
