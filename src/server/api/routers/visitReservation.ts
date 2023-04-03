@@ -3,6 +3,7 @@ import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { prisma } from "~/server/db";
+import { UNKNOWN_ERROR_FOR_USER } from "~/server/lib/errorMessages";
 import { useMailService } from "~/server/lib/nodemailer";
 import dayjs, { DateFormats } from "~/utils/dayjs";
 
@@ -49,8 +50,7 @@ export const visitReservationRouter = createTRPCRouter({
         .catch(() => {
           throw new TRPCError({
             code: "INTERNAL_SERVER_ERROR",
-            message:
-              "Wystąpił nieoczekiwany błąd. Proszę - skontaktuj się ze mną bezpośrednio.",
+            message: UNKNOWN_ERROR_FOR_USER,
           });
         });
 
@@ -61,24 +61,31 @@ export const visitReservationRouter = createTRPCRouter({
         });
       }
 
-      await prisma.visitReservation.create({
-        data: {
-          date,
-          from: input.date.from,
-          to: input.date.to,
-          name: input.name,
-          email: input.email,
-          confirmedByCustomer: false,
-          confirmedByOwner: false,
-          phoneNumber: input.phoneNumber,
-          message: input.message,
-          availableVisitDate: {
-            connect: {
-              id: availableVisitDate.id,
+      await prisma.visitReservation
+        .create({
+          data: {
+            date,
+            from: input.date.from,
+            to: input.date.to,
+            name: input.name,
+            email: input.email,
+            confirmedByCustomer: false,
+            confirmedByOwner: false,
+            phoneNumber: input.phoneNumber,
+            message: input.message,
+            availableVisitDate: {
+              connect: {
+                id: availableVisitDate.id,
+              },
             },
           },
-        },
-      });
+        })
+        .catch(() => {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: UNKNOWN_ERROR_FOR_USER,
+          });
+        });
 
       await mailService
         .sendMail({

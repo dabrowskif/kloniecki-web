@@ -30,6 +30,7 @@ const CalendarSection = () => {
     api.availableVisitDate.findMany.useQuery({
       dateFrom: currentWeek.from,
       dateTo: currentWeek.to,
+      shouldIncludeReservedDates: false,
     });
 
   const changeCurrentWeek = (weekOffset: number): void => {

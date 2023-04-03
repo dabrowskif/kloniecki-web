@@ -21,6 +21,7 @@ const CalendarGrid = () => {
     api.availableVisitDate.findMany.useQuery({
       dateFrom: currentWeek.from,
       dateTo: currentWeek.to,
+      shouldIncludeReservedDates: true,
     });
 
   const { mutate: createAvailableVisitDate, isLoading: isCreating } =
@@ -130,14 +131,21 @@ const CalendarGrid = () => {
                   <button
                     name={`Wizyta w ${day} od ${timeRange.from} do ${timeRange.to}`}
                     key={j}
-                    className={`cursor-pointer transition-colors duration-150 ${
-                      availableVisitDate
+                    className={`transition-colors duration-150 ${
+                      availableVisitDate?.visitReservation?.id
+                        ? "bg-green-400 text-white"
+                        : availableVisitDate
                         ? "bg-blue-700 text-white"
                         : isFetching
                         ? "bg-loading"
                         : "bg-white text-gray-900"
                     }`}
-                    disabled={isFetching || isCreating || isDeleting}
+                    disabled={
+                      isFetching ||
+                      isCreating ||
+                      isDeleting ||
+                      availableVisitDate?.visitReservation?.id !== undefined
+                    }
                     onClick={() => {
                       if (availableVisitDate) {
                         deleteAvailableVisitDate({ id: availableVisitDate.id });

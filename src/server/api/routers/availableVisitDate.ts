@@ -63,6 +63,7 @@ export const availableVisitDateRouter = createTRPCRouter({
       z.object({
         dateFrom: z.string(),
         dateTo: z.string(),
+        shouldIncludeReservedDates: z.boolean(),
       })
     )
     .query(async ({ input }) => {
@@ -75,6 +76,7 @@ export const availableVisitDateRouter = createTRPCRouter({
         input.dateTo,
         DateFormats.DateFormatWithYear
       ).toDate();
+
       try {
         const availableVisitDates = await prisma.availableVisitDate.findMany({
           where: {
@@ -82,7 +84,18 @@ export const availableVisitDateRouter = createTRPCRouter({
               gte: new Date(dateFrom),
               lte: new Date(dateTo),
             },
-            visitReservation: null,
+            visitReservation: input.shouldIncludeReservedDates ? {} : null,
+          },
+          select: {
+            date: true,
+            from: true,
+            id: true,
+            to: true,
+            visitReservation: {
+              select: {
+                id: true,
+              },
+            },
           },
         });
 

@@ -3,6 +3,7 @@ import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { prisma } from "~/server/db";
+import { UNKNOWN_ERROR_FOR_USER } from "~/server/lib/errorMessages";
 import { useMailService } from "~/server/lib/nodemailer";
 
 export const inquiryFormRouter = createTRPCRouter({
@@ -17,23 +18,16 @@ export const inquiryFormRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       const mailService = useMailService();
 
-      await prisma.inquiryForm
-        .create({
+      try {
+        await prisma.inquiryForm.create({
           data: {
             email: input.email,
             phoneNumber: input.phoneNumber,
             message: input.message,
           },
-        })
-        .catch((e: unknown) => {
-          throw new TRPCError({
-            code: "INTERNAL_SERVER_ERROR",
-            message: "Wystąpił nieoczekiwany błąd",
-          });
         });
 
-      await mailService
-        .sendMail({
+        await mailService.sendMail({
           to: "filip.daabrowski@gmail.com",
           from: "KlonieckiWeb filip.dabrowski@protonmail.com",
           subject: `Nowe zapytanie od ${input.email}`,
@@ -45,7 +39,12 @@ export const inquiryFormRouter = createTRPCRouter({
           }</a> <br /> Numer telefonu: ${
             input.phoneNumber ? input.phoneNumber : ""
           } <br/> <br /> ${input.message} `,
-        })
-        .catch((e) => console.log(e));
+        });
+      } catch (e) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: UNKNOWN_ERROR_FOR_USER,
+        });
+      }
     }),
 });

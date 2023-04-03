@@ -1,0 +1,1 @@
+export const UNKNOWN_ERROR_FOR_USER = 'Wystąpił nieoczekiwany błąd. Proszę - skontaktuj się ze mną telefonicznie.'

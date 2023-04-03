@@ -4,25 +4,25 @@ import Script from "next/script";
 import React from "react";
 import Footer from "~/components/general/Footer";
 import Navbar from "~/components/general/Navbar";
-import CalendarGridSecond from "~/components/pages/kalendarz/CalendarGrid";
+import CalendarGrid from "~/components/pages/kalendarz/CalendarGrid";
 import { getServerAuthSession } from "~/server/auth";
 
-// export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-//   const session = await getServerAuthSession(ctx);
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const session = await getServerAuthSession(ctx);
 
-//   if (!session?.user) {
-//     return {
-//       redirect: {
-//         destination: "/dashboard/login",
-//         permanent: false,
-//       },
-//     };
-//   }
+  if (!session?.user) {
+    return {
+      redirect: {
+        destination: "/dashboard/login",
+        permanent: false,
+      },
+    };
+  }
 
-//   return {
-//     props: {},
-//   };
-// }
+  return {
+    props: {},
+  };
+}
 
 const Dashboard: NextPage = () => {
   return (
@@ -39,7 +39,7 @@ const Dashboard: NextPage = () => {
           <h2 className="sm:text-1xl my-10 text-center text-lg tracking-tight md:text-2xl lg:text-3xl">
             Najnwosze zapytania
           </h2>
-          <CalendarGridSecond />
+          <CalendarGrid />
           <div className="mt-20 flex justify-center">
             <button className="button-primary">Wyloguj</button>
           </div>

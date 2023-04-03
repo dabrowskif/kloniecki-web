@@ -7,22 +7,22 @@ import Navbar from "~/components/general/Navbar";
 import { env } from "~/env.mjs";
 import { getServerAuthSession } from "~/server/auth";
 
-// export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-//   const session = await getServerAuthSession(ctx);
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const session = await getServerAuthSession(ctx);
 
-//   if (session?.user) {
-//     return {
-//       redirect: {
-//         destination: "/dashboard",
-//         permanent: false,
-//       },
-//     };
-//   }
+  if (session?.user) {
+    return {
+      redirect: {
+        destination: "/dashboard",
+        permanent: false,
+      },
+    };
+  }
 
-//   return {
-//     props: {},
-//   };
-// }
+  return {
+    props: {},
+  };
+}
 
 const Login = () => {
   return (
