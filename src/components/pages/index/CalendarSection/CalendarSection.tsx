@@ -1,25 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { type SetStateAction, useState, createContext } from "react";
-import CalendarGrid from "~/components/calendar/CalendarGrid";
+import { useState, createContext } from "react";
+import CalendarGrid from "~/components/publicCalendar/PublicCalendar";
 import { api } from "~/utils/api";
 import { Calendar } from "~/utils/calendar";
 import { type DateRange } from "~/utils/calendar/types";
-import CalendarColumn from "./CalendarColumn";
-import ReservationForm from "./ReservationForm";
 import WeekPagination from "./WeekPagination";
 
 export const CalendarContext = createContext<{
-  currentWeek: DateRange;
-  availableVisitDates: {
-    id: string;
-    dateFrom: Date;
-    dateTo: Date;
-  }[];
+  // visitsCalendar: IVisitsCalendar;
   isFetching: boolean;
 }>({
-  currentWeek: { to: new Date(), from: new Date() },
-  availableVisitDates: [],
+  // visitsCalendar: [],
   isFetching: false,
 });
 
@@ -29,10 +21,10 @@ const CalendarSection = () => {
     to: Calendar.getWeekStartDate(),
   });
 
-  const { data: availableVisitDates, isFetching } =
+  const { data: visitsCalendar, isFetching } =
     api.calendar.getPublicCalendar.useQuery({
-      dateFrom: currentWeek.from,
-      dateTo: currentWeek.to,
+      weekStartDate: currentWeek.from,
+      weekEndDate: currentWeek.to,
     });
 
   const changeCurrentWeek = (weekOffset: number): void => {
@@ -52,11 +44,9 @@ const CalendarSection = () => {
           />
           <hr className="my-5  border-blue-500" />
           {/* change to .length !== 0 */}
-          {availableVisitDates ? (
-            <CalendarContext.Provider
-              value={{ currentWeek, availableVisitDates, isFetching }}
-            >
-              <CalendarGrid />
+          {visitsCalendar ? (
+            <CalendarContext.Provider value={{ isFetching }}>
+              <CalendarGrid visitsCalendar={visitsCalendar} />
             </CalendarContext.Provider>
           ) : (
             <>

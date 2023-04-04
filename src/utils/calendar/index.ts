@@ -1,15 +1,14 @@
 import dayjs from "dayjs";
 import "dayjs/locale/pl";
+import { DateFormats } from "./types";
 dayjs.locale("pl");
 
-import { DateFormats, type DateRange } from "./types";
-
 export class Calendar {
-  static getAvailableDays = () => {
+  static getDays = () => {
     return ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek"];
   };
 
-  static getAvailableTimeRanges = () => {
+  static getTimeRanges = () => {
     const startTime = 8;
     const endTime = 17.5;
     const interval = 0.5;
@@ -25,6 +24,14 @@ export class Calendar {
     return availableTimes;
   };
 
+  static getHourOfDate = (date: Date) => {
+    return dayjs(date).format("HH:mm");
+  };
+
+  static getDay = (date: Date) => {
+    return dayjs(date).format("dddd");
+  };
+
   static getDateOfWeekDay = (week: Date, day: number) => {
     return dayjs(week).day(day).toDate();
   };
@@ -37,7 +44,11 @@ export class Calendar {
     return dayjs(date).isBefore(dayjs(), "day");
   };
 
-  static areDatesEqual = (date1: Date, date2: Date, precision: "minute") => {
+  static areDatesEqual = (
+    date1: Date,
+    date2: Date,
+    precision: "minute" | "day"
+  ) => {
     return dayjs(date1).isSame(dayjs(date2), precision);
   };
 
@@ -85,10 +96,10 @@ export class Calendar {
   //   return necessaryTimeRanges;
   // };
 
-  private static timeRangeToNumber = (timeRange: DateRange<string>) => {
-    return {
-      from: +timeRange.from.split(":").join(""),
-      to: +timeRange.to.split(":").join(""),
-    };
-  };
+  // private static timeRangeToNumber = (timeRange: DateRange<string>) => {
+  //   return {
+  //     from: +timeRange.from.split(":").join(""),
+  //     to: +timeRange.to.split(":").join(""),
+  //   };
+  // };
 }
