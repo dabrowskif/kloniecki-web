@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { type TimeRange } from "~/utils/calendar";
 import { AiOutlineArrowRight } from "react-icons/ai";
 import { AiOutlineArrowLeft } from "react-icons/ai";
+import { Calendar } from "~/utils/calendar";
+import { type DateRange } from "~/utils/calendar/types";
 interface IWeekPaginationProps {
   changeCurrentWeek: (weekOffset: number) => void;
-  currentWeek: TimeRange;
+  currentWeek: DateRange;
 }
 
 const WeekPagination = (props: IWeekPaginationProps) => {
@@ -30,7 +31,8 @@ const WeekPagination = (props: IWeekPaginationProps) => {
         <AiOutlineArrowLeft size={20} />
       </button>
       <h2>
-        {currentWeek.from} - {currentWeek.to}
+        {Calendar.formatDate(currentWeek.from, "DateWithYear")} -{" "}
+        {Calendar.formatDate(currentWeek.to, "DateWithYear")}
       </h2>
       <button
         type="button"

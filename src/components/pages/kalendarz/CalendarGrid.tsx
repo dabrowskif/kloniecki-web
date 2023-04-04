@@ -3,13 +3,6 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useGoogleCalendarApiClient } from "~/client/clients/googleCalendarClient";
 import { api } from "~/utils/api";
-import {
-  daysOfWeek,
-  timeRanges,
-  filterUnnecessaryTimeRanges,
-  type TimeRange,
-} from "~/utils/calendar";
-import dayjs, { DateFormats } from "~/utils/dayjs";
 
 const CalendarGrid = () => {
   const ctx = api.useContext();
@@ -79,30 +72,29 @@ const CalendarGrid = () => {
     }));
   };
 
-  useEffect(() => {
-    if (
-      data &&
-      status === "authenticated" &&
-      googleCalendarApiClient !== undefined
-    ) {
-      console.log(data?.user.google_access_token);
-      const timeMin = dayjs()
-        .startOf("week")
-        .format(DateFormats.GoogleCalendarApi);
-      const timeMax = dayjs()
-        .endOf("week")
-        .format(DateFormats.GoogleCalendarApi);
-      void googleCalendarApiClient
-        .get(`/events?timeMin=${timeMin}&timeMax=${timeMax}`, {
-          headers: {
-            Authorization: `Bearer ${data?.user.google_access_token ?? ""}`,
-          },
-        })
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        .then((res) => setGoogleCalendarEvents(res.data?.items));
-    }
-  }, [status, data, googleCalendarApiClient]);
-  console.log(googleCalendarEvents);
+  // useEffect(() => {
+  //   if (
+  //     data &&
+  //     status === "authenticated" &&
+  //     googleCalendarApiClient !== undefined
+  //   ) {
+  //     console.log(data?.user.google_access_token);
+  //     const timeMin = dayjs()
+  //       .startOf("week")
+  //       .format(DateFormats.GoogleCalendarApi);
+  //     const timeMax = dayjs()
+  //       .endOf("week")
+  //       .format(DateFormats.GoogleCalendarApi);
+  //     void googleCalendarApiClient
+  //       .get(`/events?timeMin=${timeMin}&timeMax=${timeMax}`, {
+  //         headers: {
+  //           Authorization: `Bearer ${data?.user.google_access_token ?? ""}`,
+  //         },
+  //       })
+  //       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  //       .then((res) => setGoogleCalendarEvents(res.data?.items));
+  //   }
+  // }, [status, data, googleCalendarApiClient]);
   return (
     <div className="justify-content-center flex flex-col items-center">
       <div className="w-9/12 ">

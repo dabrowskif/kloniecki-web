@@ -1,48 +1,44 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { type SetStateAction, useState } from "react";
+import { type SetStateAction, useState, createContext } from "react";
+import CalendarGrid from "~/components/calendar/CalendarGrid";
 import { api } from "~/utils/api";
-import {
-  daysOfWeek,
-  timeRanges,
-  filterUnnecessaryTimeRanges,
-  type DateWithTime,
-  type TimeRange,
-} from "~/utils/calendar";
-import dayjs, { DateFormats } from "~/utils/dayjs";
+import { Calendar } from "~/utils/calendar";
+import { type DateRange } from "~/utils/calendar/types";
 import CalendarColumn from "./CalendarColumn";
 import ReservationForm from "./ReservationForm";
 import WeekPagination from "./WeekPagination";
 
-const CalendarSection = () => {
-  const ctx = api.useContext();
+export const CalendarContext = createContext<{
+  currentWeek: DateRange;
+  availableVisitDates: {
+    id: string;
+    dateFrom: Date;
+    dateTo: Date;
+  }[];
+  isFetching: boolean;
+}>({
+  currentWeek: { to: new Date(), from: new Date() },
+  availableVisitDates: [],
+  isFetching: false,
+});
 
-  const [currentWeek, setCurrentWeek] = useState<TimeRange>({
-    from: dayjs().startOf("week").format(DateFormats.DateFormatWithYear),
-    to: dayjs().endOf("week").format(DateFormats.DateFormatWithYear),
+const CalendarSection = () => {
+  const [currentWeek, setCurrentWeek] = useState<DateRange>({
+    from: Calendar.getWeekStartDate(),
+    to: Calendar.getWeekStartDate(),
   });
 
-  const [selectedReservationDate, setSelectedReservationDate] = useState<
-    DateWithTime | undefined
-  >();
-
-  const { data: reservedVisitDates, isFetching } =
-    api.availableVisitDate.findMany.useQuery({
+  const { data: availableVisitDates, isFetching } =
+    api.calendar.getPublicCalendar.useQuery({
       dateFrom: currentWeek.from,
       dateTo: currentWeek.to,
-      shouldIncludeReservedDates: false,
     });
 
   const changeCurrentWeek = (weekOffset: number): void => {
     setCurrentWeek((prevState) => ({
-      from: dayjs(prevState.from)
-        .add(weekOffset, "week")
-        .startOf("week")
-        .format(DateFormats.DateFormatWithYear),
-      to: dayjs(prevState.to)
-        .add(weekOffset, "week")
-        .endOf("week")
-        .format(DateFormats.DateFormatWithYear),
+      from: Calendar.changeWeek(prevState.from, weekOffset),
+      to: Calendar.changeWeek(prevState.from, weekOffset),
     }));
   };
 
@@ -55,26 +51,13 @@ const CalendarSection = () => {
             changeCurrentWeek={changeCurrentWeek}
           />
           <hr className="my-5  border-blue-500" />
-          {filterUnnecessaryTimeRanges(reservedVisitDates ?? [], timeRanges)
-            .length !== 0 ? (
-            <div
-              className={`grid grid-cols-5 divide-x border shadow-lg ${
-                isFetching ? "bg-loading" : ""
-              }`}
+          {/* change to .length !== 0 */}
+          {availableVisitDates ? (
+            <CalendarContext.Provider
+              value={{ currentWeek, availableVisitDates, isFetching }}
             >
-              {daysOfWeek.map((day, i) => (
-                <CalendarColumn
-                  key={i}
-                  dayIndex={i}
-                  day={day}
-                  currentWeek={currentWeek}
-                  isFetching={isFetching}
-                  reservedVisitDates={reservedVisitDates ?? []}
-                  selectedReservationDate={selectedReservationDate}
-                  setSelectedReservationDate={setSelectedReservationDate}
-                />
-              ))}
-            </div>
+              <CalendarGrid />
+            </CalendarContext.Provider>
           ) : (
             <>
               <p className="text-center text-xl">Brak wolnych terminów.</p>
@@ -85,7 +68,7 @@ const CalendarSection = () => {
             </>
           )}
         </div>
-        <ReservationForm selectedReservationDate={selectedReservationDate} />
+        {/* <ReservationForm selectedReservationDate={selectedReservationDate} /> */}
         <div className="flex flex-col items-center justify-center space-y-4 align-middle"></div>
       </div>
     </section>

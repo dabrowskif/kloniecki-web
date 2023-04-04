@@ -72,19 +72,15 @@ model InquiryForm {
 
 model AvailableVisitDate {
   id               String            @id @default(cuid())
-  date             DateTime          @map("date") @db.DateTime(0)
-  from             String
-  to               String
+  dateFrom         DateTime          @map("dateFrom") @db.DateTime(0)
+  dateTo           DateTime          @map("dateTo") @db.DateTime(0)
   visitReservation VisitReservation?
 
-  @@unique([date, from, to])
+  @@unique([dateFrom, dateTo])
 }
 
 model VisitReservation {
   id                   String             @id @default(cuid())
-  date                 DateTime           @map("date") @db.DateTime(0)
-  from                 String
-  to                   String
   confirmedByCustomer  Boolean?           @default(false)
   confirmedByOwner     Boolean?           @default(false)
   name                 String
