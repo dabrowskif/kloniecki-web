@@ -43,8 +43,9 @@ const CalendarSection = () => {
             changeCurrentWeek={changeCurrentWeek}
           />
           <hr className="my-5  border-blue-500" />
-          {/* change to .length !== 0 */}
-          {visitsCalendar ? (
+          {isFetching ? (
+            <div>loading...</div>
+          ) : visitsCalendar ? (
             <CalendarContext.Provider value={{ isFetching }}>
               <CalendarGrid visitsCalendar={visitsCalendar} />
             </CalendarContext.Provider>
