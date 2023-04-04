@@ -11,12 +11,12 @@ const CalendarCell = (props: ICalendarCellProps) => {
   const { detailedTimeRange } = props;
   const { from, to, occupation } = detailedTimeRange;
   const { isFetching } = useContext(CalendarContext);
-
-  // const buttonBackgroundColor =
-  //   occupation === EOccupation.Reserved ? "bg-blue-500" : "";
+  console.log(occupation);
+  const buttonBackgroundColor =
+    occupation === EOccupation.Reserved ? "bg-blue-500" : "";
 
   return (
-    <button>
+    <button className={`${buttonBackgroundColor}`}>
       <div className="p-2 text-center">
         {from} - {to}
       </div>

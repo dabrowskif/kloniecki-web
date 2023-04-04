@@ -52,7 +52,8 @@ export const calendarRouter = createTRPCRouter({
               const availableVisit = visits.find(
                 (visit) =>
                   Calendar.areDatesEqual(visit.dateFrom, date, "day") &&
-                  Calendar.getHourOfDate(visit.dateFrom) === timeRange.from
+                  Calendar.getHourOfDate(visit.dateFrom) === timeRange.from &&
+                  !visit.visitReservation
               );
 
               if (availableVisit) {
