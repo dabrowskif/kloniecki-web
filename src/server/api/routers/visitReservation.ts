@@ -65,6 +65,10 @@ export const visitReservationRouter = createTRPCRouter({
           });
         });
 
+      console.log("Wysylam maila:");
+      console.log(input.dateFrom);
+      console.log(Calendar.formatDate(input.dateFrom, "HourWithMinutes"));
+
       await mailService
         .sendMail({
           to: "filip.daabrowski@gmail.com",

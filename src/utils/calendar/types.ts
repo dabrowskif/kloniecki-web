@@ -6,7 +6,7 @@ export interface DateRange<T = Date> {
 export const DateFormats = {
   DateWithYear: "YYYY-MM-DD",
   DateWithoutYear: "DD-MM",
-  HourWithMinutes: "HH:MM",
+  HourWithMinutes: "HH:mm",
   GoogleCalendarApi: "YYYY-MM-DD[T]HH:mm:ss[Z]",
 };
 

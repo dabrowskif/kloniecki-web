@@ -31,7 +31,6 @@ export class Calendar {
   };
 
   static getHourOfDate = (date: Date) => {
-    console.log(dayjs(date).format("HH:mm"));
     return dayjs(date).format("HH:mm");
   };
 
