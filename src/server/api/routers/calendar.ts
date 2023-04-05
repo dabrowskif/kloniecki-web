@@ -14,7 +14,10 @@ import {
   type VisitsCalendar,
   type CalendarColumn,
   type ColumnCell,
+  type TimeRange,
 } from "~/utils/calendar/types";
+import { getPrivateCalendarColumn } from "../helpers/privateCalendar";
+import { getPublicCalendarColumn } from "../helpers/publicCalendar";
 
 export const calendarRouter = createTRPCRouter({
   getPublicCalendar: publicProcedure
@@ -41,11 +44,20 @@ export const calendarRouter = createTRPCRouter({
         });
 
         const days = Calendar.getDays();
-
-        return days.map(
-          (_, i): CalendarColumn =>
-            getCalendarColumn(i, input.weekStartDate, availableVisits)
+        const timeRanges = Calendar.getTimeRanges();
+        const filteredTimeRanges = Calendar.removeUnnecessaryTimeRanges(
+          timeRanges,
+          availableVisits
         );
+
+        return days.map((_, i): CalendarColumn => {
+          const date = Calendar.getDateOfWeekDay(input.weekStartDate, i + 1);
+          return getPublicCalendarColumn(
+            date,
+            availableVisits,
+            filteredTimeRanges
+          );
+        });
       } catch (e) {
         console.log(e);
         throw new TRPCError({
@@ -65,7 +77,7 @@ export const calendarRouter = createTRPCRouter({
     )
     .query(async ({ input, ctx }): Promise<VisitsCalendar> => {
       try {
-        const visits = await prisma.availableVisit.findMany({
+        const availableVisits = await prisma.availableVisit.findMany({
           where: {
             dateFrom: {
               gte: input.weekStartDate,
@@ -80,11 +92,12 @@ export const calendarRouter = createTRPCRouter({
         });
 
         const days = Calendar.getDays();
+        const timeRanges = Calendar.getTimeRanges();
 
-        return days.map(
-          (_, i): CalendarColumn =>
-            getCalendarColumn(i, input.weekStartDate, visits)
-        );
+        return days.map((_, i): CalendarColumn => {
+          const date = Calendar.getDateOfWeekDay(input.weekStartDate, i + 1);
+          return getPrivateCalendarColumn(date, availableVisits, timeRanges);
+        });
       } catch (e) {
         console.log(e);
         throw new TRPCError({
@@ -95,51 +108,3 @@ export const calendarRouter = createTRPCRouter({
       }
     }),
 });
-
-const getCalendarColumn = (
-  dayIndex: number,
-  weekStartDate: Date,
-  availableVisits: (AvailableVisit & {
-    visitReservation: VisitReservation | null;
-  })[]
-): CalendarColumn => {
-  const date = Calendar.getDateOfWeekDay(weekStartDate, dayIndex + 1);
-  const day = Calendar.getDay(date);
-  const timeRanges = Calendar.getTimeRanges();
-
-  const columnCells = timeRanges.map((timeRange) =>
-    getColumnCell(timeRange, date, availableVisits)
-  );
-
-  return {
-    date,
-    day,
-    columnCells,
-  };
-};
-
-const getColumnCell = (
-  timeRange: {
-    from: string;
-    to: string;
-  },
-  date: Date,
-  availableVisits: (AvailableVisit & {
-    visitReservation: VisitReservation | null;
-  })[]
-): ColumnCell => {
-  const dateFrom = Calendar.addTimeToDate(date, timeRange.from);
-  const dateTo = Calendar.addTimeToDate(date, timeRange.to);
-  const availableVisit = availableVisits.find(
-    (visit) =>
-      Calendar.areDatesEqual(visit.dateFrom, date, "day") &&
-      Calendar.getHourOfDate(visit.dateFrom) === timeRange.from &&
-      !visit.visitReservation
-  );
-
-  return {
-    dateFrom: dateFrom,
-    dateTo: dateTo,
-    occupation: availableVisit ? "reserved" : "available",
-  };
-};

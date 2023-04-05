@@ -22,7 +22,7 @@ export const visitReservationRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       const mailService = useMailService();
 
-      const availableVisitDate = await prisma.availableVisitDate
+      const availableVisitDate = await prisma.availableVisit
         .findFirst({
           where: {
             dateFrom: input.dateFrom,
@@ -51,7 +51,7 @@ export const visitReservationRouter = createTRPCRouter({
             email: input.email,
             phoneNumber: input.phoneNumber,
             message: input.message,
-            availableVisitDate: {
+            availableVisit: {
               connect: {
                 id: availableVisitDate.id,
               },

@@ -1,14 +1,15 @@
 import React from "react";
 import { Calendar } from "~/utils/calendar";
-import { CalendarColumn } from "~/utils/calendar/types";
-import ColumnCell from "./ColumnCell";
+import { type CalendarColumn } from "~/utils/calendar/types";
+import PrivateCalendarCell from "./PrivateCalendarCell";
 
-interface ICalendarColumnProps {
+interface IPrivateCalendarColumnProps {
   calendarColumn: CalendarColumn;
 }
-const CalendarColumn = (props: ICalendarColumnProps) => {
+const PrivateCalendarColumn = (props: IPrivateCalendarColumnProps) => {
   const { calendarColumn } = props;
   const { date, day, columnCells } = calendarColumn;
+
   return (
     <div className="flex flex-col">
       <div className="p-2 text-center text-blue-700">
@@ -16,10 +17,10 @@ const CalendarColumn = (props: ICalendarColumnProps) => {
       </div>
       <hr />
       {columnCells.map((cell, i) => (
-        <ColumnCell key={i} columnCell={cell} />
+        <PrivateCalendarCell key={i} columnCell={cell} />
       ))}
     </div>
   );
 };
 
-export default CalendarColumn;
+export default PrivateCalendarColumn;

@@ -11,20 +11,21 @@ interface IWeekPaginationProps {
 const WeekPagination = (props: IWeekPaginationProps) => {
   const { changeCurrentWeek, currentWeek } = props;
 
-  const [isNextWeekAvailable, setIsNextWeekAvailable] = useState(true);
-  const [isPrevWeekAvailable, setIsPrevWeekAvailable] = useState(false);
+  // const [isNextWeekAvailable, setIsNextWeekAvailable] = useState(true);
+  // const [isPrevWeekAvailable, setIsPrevWeekAvailable] = useState(false);
 
   return (
     <div className="flex items-center justify-center gap-10">
       <button
         type="button"
         className={`focusable p-2.5 text-center text-sm font-medium text-white  ${
-          !isPrevWeekAvailable ? "button-primary-disabled" : "button-primary "
+          // !isPrevWeekAvailable ? "button-primary-disabled" : "button-primary "
+          "button-primary"
         }`}
-        disabled={!isPrevWeekAvailable}
+        // disabled={!isPrevWeekAvailable}
         onClick={() => {
-          setIsNextWeekAvailable(true);
-          setIsPrevWeekAvailable(false);
+          // setIsNextWeekAvailable(true);
+          // setIsPrevWeekAvailable(false);
           changeCurrentWeek(-1);
         }}
       >
@@ -37,12 +38,13 @@ const WeekPagination = (props: IWeekPaginationProps) => {
       <button
         type="button"
         className={`focusable p-2.5 text-center text-sm font-medium text-white  ${
-          !isNextWeekAvailable ? "button-primary-disabled" : "button-primary "
+          // !isNextWeekAvailable ? "button-primary-disabled" : "button-primary "
+          "button-primary"
         }`}
-        disabled={!isNextWeekAvailable}
+        // disabled={!isNextWeekAvailable}
         onClick={() => {
-          setIsNextWeekAvailable(false);
-          setIsPrevWeekAvailable(true);
+          // setIsNextWeekAvailable(false);
+          // setIsPrevWeekAvailable(true);
           changeCurrentWeek(1);
         }}
       >

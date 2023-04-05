@@ -1,5 +1,5 @@
 import { createTRPCRouter } from "~/server/api/trpc";
-import { availableVisitDateRouter } from "./routers/availableVisitDate";
+import { availableVisitRouter } from "./routers/availableVisit";
 import { calendarRouter } from "./routers/calendar";
 import { inquiryFormRouter } from "./routers/inquiryForm";
 import { visitReservationRouter } from "./routers/visitReservation";
@@ -11,7 +11,7 @@ import { visitReservationRouter } from "./routers/visitReservation";
  */
 export const appRouter = createTRPCRouter({
   inquiryForm: inquiryFormRouter,
-  availableVisitDate: availableVisitDateRouter,
+  availableVisit: availableVisitRouter,
   visitReservation: visitReservationRouter,
   calendar: calendarRouter,
 });

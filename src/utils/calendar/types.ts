@@ -19,7 +19,13 @@ export type CalendarColumn = {
 };
 
 export type ColumnCell = {
+  availableVisitId?: string;
   dateFrom: Date;
   dateTo: Date;
-  occupation: "available" | "reserved";
+  occupation: "available" | "unavailable" | "reserved";
+};
+
+export type TimeRange = {
+  from: string;
+  to: string;
 };

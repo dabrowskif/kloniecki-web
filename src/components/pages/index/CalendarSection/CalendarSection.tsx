@@ -1,22 +1,25 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { useState, createContext, useEffect } from "react";
-import CalendarColumn from "~/components/calendar/CalendarColumn";
-import CalendarComponent, {
-  type IOnCellClickParams,
-} from "~/components/calendar/CalendarComponent";
-import CalendarGrid from "~/components/calendar/CalendarComponent";
+import { useState, useEffect } from "react";
 import { api } from "~/utils/api";
 import { Calendar } from "~/utils/calendar";
-import { type VisitsCalendar, type DateRange } from "~/utils/calendar/types";
-import WeekPagination from "./WeekPagination";
+import {
+  type VisitsCalendar,
+  type DateRange,
+  type ColumnCell,
+} from "~/utils/calendar/types";
+import ReservationForm from "./ReservationForm";
+import WeekPagination from "../../../calendars/CalendarPagination";
+import PublicCalendar from "~/components/calendars/publicCalendar/PublicCalendar";
 
 const CalendarSection = () => {
   const [currentWeek, setCurrentWeek] = useState<DateRange>({
     from: Calendar.getWeekStartDate(),
-    to: Calendar.getWeekStartDate(),
+    to: Calendar.getWeekEndDate(),
   });
-  const [visitsCalendar, setVisitsCalendar] = useState<VisitsCalendar>([]);
+  const [calendarColumns, setCalendarColumns] = useState<VisitsCalendar>([]);
+
+  const [selectedCell, setSelectedCell] = useState<ColumnCell>();
 
   const { data: visitsCalendarData, isFetching } =
     api.calendar.getPublicCalendar.useQuery({
@@ -26,24 +29,36 @@ const CalendarSection = () => {
 
   const changeCurrentWeek = (weekOffset: number): void => {
     setCurrentWeek((prevState) => ({
-      from: Calendar.changeWeek(prevState.from, weekOffset),
-      to: Calendar.changeWeek(prevState.from, weekOffset),
+      from: Calendar.changeWeek(prevState.from, weekOffset, "week_start"),
+      to: Calendar.changeWeek(prevState.to, weekOffset, "week_end"),
     }));
   };
 
   useEffect(() => {
     if (!isFetching && visitsCalendarData) {
-      setVisitsCalendar(visitsCalendarData);
+      setCalendarColumns(visitsCalendarData);
     }
   }, [isFetching, visitsCalendarData]);
 
-  const handleCellClick = ({ dateFrom, dateTo }: IOnCellClickParams) => {
-    console.log(
-      "cell clicked",
-      Calendar.formatDate(dateFrom, "DateWithoutYear"),
-      Calendar.getHourOfDate(dateFrom),
-      Calendar.getHourOfDate(dateTo)
-    );
+  const handleCellClick = (cell: ColumnCell) => {
+    setSelectedCell(cell);
+  };
+
+  const getCellColor = (cell: ColumnCell) => {
+    if (
+      selectedCell &&
+      Calendar.areDatesEqual(selectedCell?.dateFrom, cell.dateFrom, "minute") &&
+      Calendar.areDatesEqual(selectedCell?.dateTo, cell.dateTo, "minute")
+    ) {
+      return "bg-blue-700 text-white";
+    }
+    if (cell.occupation === "available") {
+      return "bg-white text-dark-700";
+    }
+    if (cell.occupation === "reserved") {
+      return "bg-gray-100 text-gray-400";
+    }
+    return "";
   };
 
   return (
@@ -55,10 +70,13 @@ const CalendarSection = () => {
             changeCurrentWeek={changeCurrentWeek}
           />
           <hr className="my-5  border-blue-500" />
-          {visitsCalendar ? (
-            <CalendarComponent
-              contextValue={{ isFetching, onCellClick: handleCellClick }}
-              visitsCalendar={visitsCalendar}
+          {calendarColumns ? (
+            <PublicCalendar
+              contextValue={{
+                handleCellClick,
+                getCellColor,
+              }}
+              calendarColumns={calendarColumns}
             />
           ) : (
             <>
@@ -70,7 +88,7 @@ const CalendarSection = () => {
             </>
           )}
         </div>
-        {/* <ReservationForm selectedReservationDate={selectedReservationDate} /> */}
+        <ReservationForm selectedCell={selectedCell} />
         <div className="flex flex-col items-center justify-center space-y-4 align-middle"></div>
       </div>
     </section>
