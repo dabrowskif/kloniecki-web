@@ -28,6 +28,14 @@ export class Calendar {
     return dayjs(date).format("HH:mm");
   };
 
+  static addTimeToDate = (date: Date, time: string) => {
+    const [hours, minutes] = time.split(":");
+    return dayjs(date)
+      .add(+(hours ?? 0), "hours")
+      .add(+(minutes ?? 0), "minutes")
+      .toDate();
+  };
+
   static getDay = (date: Date) => {
     return dayjs(date).format("dddd");
   };

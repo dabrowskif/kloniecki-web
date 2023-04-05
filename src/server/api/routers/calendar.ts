@@ -55,6 +55,45 @@ export const calendarRouter = createTRPCRouter({
         });
       }
     }),
+
+  getPrivateCalendar: protectedProcedure
+    .input(
+      z.object({
+        weekStartDate: z.date(),
+        weekEndDate: z.date(),
+      })
+    )
+    .query(async ({ input, ctx }): Promise<VisitsCalendar> => {
+      try {
+        const visits = await prisma.visit.findMany({
+          where: {
+            dateFrom: {
+              gte: input.weekStartDate,
+            },
+            dateTo: {
+              lte: input.weekEndDate,
+            },
+          },
+          include: {
+            visitReservation: true,
+          },
+        });
+
+        const days = Calendar.getDays();
+
+        return days.map(
+          (_, i): CalendarColumn =>
+            getCalendarColumn(i, input.weekStartDate, visits)
+        );
+      } catch (e) {
+        console.log(e);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: UNKNOWN_ERROR_FOR_USER,
+          cause: e,
+        });
+      }
+    }),
 });
 
 const getCalendarColumn = (
@@ -89,6 +128,8 @@ const getColumnCell = (
     visitReservation: VisitReservation | null;
   })[]
 ): ColumnCell => {
+  const dateFrom = Calendar.addTimeToDate(date, timeRange.from);
+  const dateTo = Calendar.addTimeToDate(date, timeRange.to);
   const availableVisit = visits.find(
     (visit) =>
       Calendar.areDatesEqual(visit.dateFrom, date, "day") &&
@@ -96,18 +137,9 @@ const getColumnCell = (
       !visit.visitReservation
   );
 
-  if (availableVisit) {
-    return {
-      id: availableVisit.id,
-      from: timeRange.from,
-      to: timeRange.to,
-      occupation: "available",
-    };
-  } else {
-    return {
-      from: timeRange.from,
-      to: timeRange.to,
-      occupation: "reserved",
-    };
-  }
+  return {
+    dateFrom: dateFrom,
+    dateTo: dateTo,
+    occupation: availableVisit ? "reserved" : "available",
+  };
 };

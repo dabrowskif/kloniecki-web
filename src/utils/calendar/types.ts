@@ -18,15 +18,8 @@ export type CalendarColumn = {
   columnCells: ColumnCell[];
 };
 
-export type ColumnCell =
-  | {
-      id: string;
-      from: string;
-      to: string;
-      occupation: "available";
-    }
-  | {
-      from: string;
-      to: string;
-      occupation: "private_event" | "reserved";
-    };
+export type ColumnCell = {
+  dateFrom: Date;
+  dateTo: Date;
+  occupation: "available" | "reserved";
+};

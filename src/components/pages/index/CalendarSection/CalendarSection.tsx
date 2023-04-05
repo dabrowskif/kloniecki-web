@@ -1,18 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { useState, createContext } from "react";
+import { useState, createContext, useEffect } from "react";
+import CalendarColumn from "~/components/publicCalendar/CalendarColumn";
 import CalendarGrid from "~/components/publicCalendar/PublicCalendar";
 import { api } from "~/utils/api";
 import { Calendar } from "~/utils/calendar";
-import { type DateRange } from "~/utils/calendar/types";
+import { type VisitsCalendar, type DateRange } from "~/utils/calendar/types";
 import WeekPagination from "./WeekPagination";
 
 export const CalendarContext = createContext<{
-  // visitsCalendar: IVisitsCalendar;
   isFetching: boolean;
+  onCellClick: (dateFrom: Date, dateTo: Date) => void;
 }>({
-  // visitsCalendar: [],
   isFetching: false,
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  onCellClick: () => {},
 });
 
 const CalendarSection = () => {
@@ -20,8 +22,9 @@ const CalendarSection = () => {
     from: Calendar.getWeekStartDate(),
     to: Calendar.getWeekStartDate(),
   });
+  const [visitsCalendar, setVisitsCalendar] = useState<VisitsCalendar>([]);
 
-  const { data: visitsCalendar, isFetching } =
+  const { data: visitsCalendarData, isFetching } =
     api.calendar.getPublicCalendar.useQuery({
       weekStartDate: currentWeek.from,
       weekEndDate: currentWeek.to,
@@ -34,6 +37,20 @@ const CalendarSection = () => {
     }));
   };
 
+  useEffect(() => {
+    if (!isFetching && visitsCalendarData) {
+      setVisitsCalendar(visitsCalendarData);
+    }
+  }, [isFetching, visitsCalendarData]);
+
+  const handleCellClick = (dateFrom: Date, dateTo: Date) => {
+    console.log(
+      "cell clicked",
+      Calendar.formatDate(dateFrom, "DateWithoutYear"),
+      Calendar.formatDate(dateTo, "DateWithoutYear")
+    );
+  };
+
   return (
     <section id="kalendarz" className="bg-white p-10">
       <div className="justify-content-center flex flex-col items-center">
@@ -43,12 +60,18 @@ const CalendarSection = () => {
             changeCurrentWeek={changeCurrentWeek}
           />
           <hr className="my-5  border-blue-500" />
-          {isFetching ? (
-            <div>loading...</div>
-          ) : visitsCalendar ? (
-            <CalendarContext.Provider value={{ isFetching }}>
-              <CalendarGrid visitsCalendar={visitsCalendar} />
-            </CalendarContext.Provider>
+          {visitsCalendar ? (
+            <div className="relative">
+              <CalendarContext.Provider
+                value={{ isFetching, onCellClick: handleCellClick }}
+              >
+                <div className="grid grid-cols-5 divide-x border shadow-lg">
+                  {visitsCalendar.map((calendarColumn, i) => (
+                    <CalendarColumn key={i} calendarColumn={calendarColumn} />
+                  ))}
+                </div>
+              </CalendarContext.Provider>
+            </div>
           ) : (
             <>
               <p className="text-center text-xl">Brak wolnych terminów.</p>

@@ -9,19 +9,22 @@ interface IColumnCellProps {
 
 const ColumnCell = (props: IColumnCellProps) => {
   const { columnCell } = props;
-  const { from, to, occupation } = columnCell;
-  const { isFetching } = useContext(CalendarContext);
+  const { dateFrom, dateTo, occupation } = columnCell;
+  const { isFetching, onCellClick } = useContext(CalendarContext);
 
-  const buttonStyle =
-    occupation === "available" ? "" : "text-gray-400 bg-gray-100";
+  const buttonStyle = isFetching
+    ? "bg-loading"
+    : occupation !== "available"
+    ? "text-gray-400 bg-gray-100"
+    : "";
 
   return (
     <button
       className={`${buttonStyle}`}
-      onClick={() => console.log(occupation)}
+      onClick={() => onCellClick(dateFrom, dateTo)}
     >
       <div className="p-2 text-center">
-        {from} - {to}
+        {Calendar.getHourOfDate(dateFrom)} - {Calendar.getHourOfDate(dateTo)}
       </div>
       <hr />
     </button>
