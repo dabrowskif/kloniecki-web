@@ -1,3 +1,4 @@
+import { type Visit, type VisitReservation } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
@@ -11,9 +12,8 @@ import { UNKNOWN_ERROR_FOR_USER } from "~/server/lib/errorMessages";
 import { Calendar } from "~/utils/calendar";
 import {
   type VisitsCalendar,
-  EOccupation,
   type CalendarColumn,
-  type DetailedTimeRange,
+  type ColumnCell,
 } from "~/utils/calendar/types";
 
 export const calendarRouter = createTRPCRouter({
@@ -42,48 +42,10 @@ export const calendarRouter = createTRPCRouter({
 
         const days = Calendar.getDays();
 
-        return days.map((_, i): CalendarColumn => {
-          const date = Calendar.getDateOfWeekDay(input.weekStartDate, i + 1);
-          const day = days[i] as string;
-          const timeRanges = Calendar.getTimeRanges();
-
-          const detailedTimeRanges = timeRanges.map(
-            (timeRange): DetailedTimeRange => {
-              const availableVisit = visits.find(
-                (visit) =>
-                  Calendar.areDatesEqual(visit.dateFrom, date, "day") &&
-                  Calendar.getHourOfDate(visit.dateFrom) === timeRange.from &&
-                  !visit.visitReservation
-              );
-
-              if (availableVisit) {
-                return {
-                  id: availableVisit.id,
-                  from: timeRange.from,
-                  to: timeRange.to,
-                  occupation: EOccupation.Available as unknown as Pick<
-                    typeof EOccupation,
-                    "Available"
-                  >,
-                };
-              } else {
-                return {
-                  from: timeRange.from,
-                  to: timeRange.to,
-                  occupation: EOccupation.Reserved as unknown as Pick<
-                    typeof EOccupation,
-                    "Private_event" | "Reserved"
-                  >,
-                };
-              }
-            }
-          );
-          return {
-            date,
-            day,
-            detailedTimeRanges,
-          };
-        });
+        return days.map(
+          (_, i): CalendarColumn =>
+            getCalendarColumn(i, input.weekStartDate, visits)
+        );
       } catch (e) {
         console.log(e);
         throw new TRPCError({
@@ -94,3 +56,58 @@ export const calendarRouter = createTRPCRouter({
       }
     }),
 });
+
+const getCalendarColumn = (
+  dayIndex: number,
+  weekStartDate: Date,
+  visits: (Visit & {
+    visitReservation: VisitReservation | null;
+  })[]
+): CalendarColumn => {
+  const date = Calendar.getDateOfWeekDay(weekStartDate, dayIndex + 1);
+  const day = Calendar.getDay(date);
+  const timeRanges = Calendar.getTimeRanges();
+
+  const columnCells = timeRanges.map((timeRange) =>
+    getColumnCell(timeRange, date, visits)
+  );
+
+  return {
+    date,
+    day,
+    columnCells,
+  };
+};
+
+const getColumnCell = (
+  timeRange: {
+    from: string;
+    to: string;
+  },
+  date: Date,
+  visits: (Visit & {
+    visitReservation: VisitReservation | null;
+  })[]
+): ColumnCell => {
+  const availableVisit = visits.find(
+    (visit) =>
+      Calendar.areDatesEqual(visit.dateFrom, date, "day") &&
+      Calendar.getHourOfDate(visit.dateFrom) === timeRange.from &&
+      !visit.visitReservation
+  );
+
+  if (availableVisit) {
+    return {
+      id: availableVisit.id,
+      from: timeRange.from,
+      to: timeRange.to,
+      occupation: "available",
+    };
+  } else {
+    return {
+      from: timeRange.from,
+      to: timeRange.to,
+      occupation: "reserved",
+    };
+  }
+};

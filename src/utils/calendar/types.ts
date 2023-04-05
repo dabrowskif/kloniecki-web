@@ -15,24 +15,18 @@ export type VisitsCalendar = CalendarColumn[];
 export type CalendarColumn = {
   day: string;
   date: Date;
-  detailedTimeRanges: DetailedTimeRange[];
+  columnCells: ColumnCell[];
 };
 
-export type DetailedTimeRange =
+export type ColumnCell =
   | {
       id: string;
       from: string;
       to: string;
-      occupation: Pick<typeof EOccupation, "Available">;
+      occupation: "available";
     }
   | {
       from: string;
       to: string;
-      occupation: Pick<typeof EOccupation, "Private_event" | "Reserved">;
+      occupation: "private_event" | "reserved";
     };
-
-export const EOccupation = {
-  Available: "available",
-  Reserved: "reserved",
-  Private_event: "private_event",
-};
