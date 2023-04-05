@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { Calendar } from "~/utils/calendar";
 import { ColumnCell } from "~/utils/calendar/types";
-import { CalendarContext } from "../pages/index/CalendarSection/CalendarSection";
+import { CalendarContext } from "./CalendarComponent";
 
 interface IColumnCellProps {
   columnCell: ColumnCell;
@@ -21,7 +21,7 @@ const ColumnCell = (props: IColumnCellProps) => {
   return (
     <button
       className={`${buttonStyle}`}
-      onClick={() => onCellClick(dateFrom, dateTo)}
+      onClick={() => onCellClick({ dateFrom, dateTo })}
     >
       <div className="p-2 text-center">
         {Calendar.getHourOfDate(dateFrom)} - {Calendar.getHourOfDate(dateTo)}

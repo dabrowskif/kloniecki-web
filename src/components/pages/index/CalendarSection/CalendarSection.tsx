@@ -1,21 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { useState, createContext, useEffect } from "react";
-import CalendarColumn from "~/components/publicCalendar/CalendarColumn";
-import CalendarGrid from "~/components/publicCalendar/PublicCalendar";
+import CalendarColumn from "~/components/calendar/CalendarColumn";
+import CalendarComponent, {
+  type IOnCellClickParams,
+} from "~/components/calendar/CalendarComponent";
+import CalendarGrid from "~/components/calendar/CalendarComponent";
 import { api } from "~/utils/api";
 import { Calendar } from "~/utils/calendar";
 import { type VisitsCalendar, type DateRange } from "~/utils/calendar/types";
 import WeekPagination from "./WeekPagination";
-
-export const CalendarContext = createContext<{
-  isFetching: boolean;
-  onCellClick: (dateFrom: Date, dateTo: Date) => void;
-}>({
-  isFetching: false,
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  onCellClick: () => {},
-});
 
 const CalendarSection = () => {
   const [currentWeek, setCurrentWeek] = useState<DateRange>({
@@ -43,11 +37,12 @@ const CalendarSection = () => {
     }
   }, [isFetching, visitsCalendarData]);
 
-  const handleCellClick = (dateFrom: Date, dateTo: Date) => {
+  const handleCellClick = ({ dateFrom, dateTo }: IOnCellClickParams) => {
     console.log(
       "cell clicked",
       Calendar.formatDate(dateFrom, "DateWithoutYear"),
-      Calendar.formatDate(dateTo, "DateWithoutYear")
+      Calendar.getHourOfDate(dateFrom),
+      Calendar.getHourOfDate(dateTo)
     );
   };
 
@@ -61,17 +56,10 @@ const CalendarSection = () => {
           />
           <hr className="my-5  border-blue-500" />
           {visitsCalendar ? (
-            <div className="relative">
-              <CalendarContext.Provider
-                value={{ isFetching, onCellClick: handleCellClick }}
-              >
-                <div className="grid grid-cols-5 divide-x border shadow-lg">
-                  {visitsCalendar.map((calendarColumn, i) => (
-                    <CalendarColumn key={i} calendarColumn={calendarColumn} />
-                  ))}
-                </div>
-              </CalendarContext.Provider>
-            </div>
+            <CalendarComponent
+              contextValue={{ isFetching, onCellClick: handleCellClick }}
+              visitsCalendar={visitsCalendar}
+            />
           ) : (
             <>
               <p className="text-center text-xl">Brak wolnych terminów.</p>

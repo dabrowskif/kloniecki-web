@@ -1,4 +1,4 @@
-import { type Visit, type VisitReservation } from "@prisma/client";
+import { type AvailableVisit, type VisitReservation } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
@@ -26,7 +26,7 @@ export const calendarRouter = createTRPCRouter({
     )
     .query(async ({ input }): Promise<VisitsCalendar> => {
       try {
-        const visits = await prisma.visit.findMany({
+        const availableVisits = await prisma.availableVisit.findMany({
           where: {
             dateFrom: {
               gte: input.weekStartDate,
@@ -44,7 +44,7 @@ export const calendarRouter = createTRPCRouter({
 
         return days.map(
           (_, i): CalendarColumn =>
-            getCalendarColumn(i, input.weekStartDate, visits)
+            getCalendarColumn(i, input.weekStartDate, availableVisits)
         );
       } catch (e) {
         console.log(e);
@@ -65,7 +65,7 @@ export const calendarRouter = createTRPCRouter({
     )
     .query(async ({ input, ctx }): Promise<VisitsCalendar> => {
       try {
-        const visits = await prisma.visit.findMany({
+        const visits = await prisma.availableVisit.findMany({
           where: {
             dateFrom: {
               gte: input.weekStartDate,
@@ -99,7 +99,7 @@ export const calendarRouter = createTRPCRouter({
 const getCalendarColumn = (
   dayIndex: number,
   weekStartDate: Date,
-  visits: (Visit & {
+  availableVisits: (AvailableVisit & {
     visitReservation: VisitReservation | null;
   })[]
 ): CalendarColumn => {
@@ -108,7 +108,7 @@ const getCalendarColumn = (
   const timeRanges = Calendar.getTimeRanges();
 
   const columnCells = timeRanges.map((timeRange) =>
-    getColumnCell(timeRange, date, visits)
+    getColumnCell(timeRange, date, availableVisits)
   );
 
   return {
@@ -124,13 +124,13 @@ const getColumnCell = (
     to: string;
   },
   date: Date,
-  visits: (Visit & {
+  availableVisits: (AvailableVisit & {
     visitReservation: VisitReservation | null;
   })[]
 ): ColumnCell => {
   const dateFrom = Calendar.addTimeToDate(date, timeRange.from);
   const dateTo = Calendar.addTimeToDate(date, timeRange.to);
-  const availableVisit = visits.find(
+  const availableVisit = availableVisits.find(
     (visit) =>
       Calendar.areDatesEqual(visit.dateFrom, date, "day") &&
       Calendar.getHourOfDate(visit.dateFrom) === timeRange.from &&
