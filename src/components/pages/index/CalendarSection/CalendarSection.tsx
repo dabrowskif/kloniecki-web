@@ -1,49 +1,64 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { type SetStateAction, useState } from "react";
+import { useState, useEffect } from "react";
 import { api } from "~/utils/api";
+import { Calendar } from "~/utils/calendar";
 import {
-  daysOfWeek,
-  timeRanges,
-  filterUnnecessaryTimeRanges,
-  type DateWithTime,
-  type TimeRange,
-} from "~/utils/calendar";
-import dayjs, { DateFormats } from "~/utils/dayjs";
-import CalendarColumn from "./CalendarColumn";
+  type VisitsCalendar,
+  type DateRange,
+  type ColumnCell,
+} from "~/utils/calendar/types";
 import ReservationForm from "./ReservationForm";
-import WeekPagination from "./WeekPagination";
+import WeekPagination from "../../../calendars/CalendarPagination";
+import PublicCalendar from "~/components/calendars/publicCalendar/PublicCalendar";
 
 const CalendarSection = () => {
-  const ctx = api.useContext();
-
-  const [currentWeek, setCurrentWeek] = useState<TimeRange>({
-    from: dayjs().startOf("week").format(DateFormats.DateFormatWithYear),
-    to: dayjs().endOf("week").format(DateFormats.DateFormatWithYear),
+  const [currentWeek, setCurrentWeek] = useState<DateRange>({
+    from: Calendar.getWeekStartDate(),
+    to: Calendar.getWeekEndDate(),
   });
+  const [calendarColumns, setCalendarColumns] = useState<VisitsCalendar>([]);
 
-  const [selectedReservationDate, setSelectedReservationDate] = useState<
-    DateWithTime | undefined
-  >();
+  const [selectedCell, setSelectedCell] = useState<ColumnCell>();
 
-  const { data: reservedVisitDates, isFetching } =
-    api.availableVisitDate.findMany.useQuery({
-      dateFrom: currentWeek.from,
-      dateTo: currentWeek.to,
-      shouldIncludeReservedDates: false,
+  const { data: visitsCalendarData, isFetching } =
+    api.calendar.getPublicCalendar.useQuery({
+      weekStartDate: currentWeek.from,
+      weekEndDate: currentWeek.to,
     });
 
   const changeCurrentWeek = (weekOffset: number): void => {
     setCurrentWeek((prevState) => ({
-      from: dayjs(prevState.from)
-        .add(weekOffset, "week")
-        .startOf("week")
-        .format(DateFormats.DateFormatWithYear),
-      to: dayjs(prevState.to)
-        .add(weekOffset, "week")
-        .endOf("week")
-        .format(DateFormats.DateFormatWithYear),
+      from: Calendar.changeWeek(prevState.from, weekOffset, "week_start"),
+      to: Calendar.changeWeek(prevState.to, weekOffset, "week_end"),
     }));
+  };
+
+  useEffect(() => {
+    if (!isFetching && visitsCalendarData) {
+      setCalendarColumns(visitsCalendarData);
+    }
+  }, [isFetching, visitsCalendarData]);
+
+  const handleCellClick = (cell: ColumnCell) => {
+    setSelectedCell(cell);
+  };
+
+  const getCellColor = (cell: ColumnCell) => {
+    if (
+      selectedCell &&
+      Calendar.areDatesEqual(selectedCell?.dateFrom, cell.dateFrom, "minute") &&
+      Calendar.areDatesEqual(selectedCell?.dateTo, cell.dateTo, "minute")
+    ) {
+      return "bg-blue-700 text-white";
+    }
+    if (cell.occupation === "available") {
+      return "bg-white text-dark-700";
+    }
+    if (cell.occupation === "reserved") {
+      return "bg-gray-100 text-gray-400";
+    }
+    return "";
   };
 
   return (
@@ -55,26 +70,14 @@ const CalendarSection = () => {
             changeCurrentWeek={changeCurrentWeek}
           />
           <hr className="my-5  border-blue-500" />
-          {filterUnnecessaryTimeRanges(reservedVisitDates ?? [], timeRanges)
-            .length !== 0 ? (
-            <div
-              className={`grid grid-cols-5 divide-x border shadow-lg ${
-                isFetching ? "bg-loading" : ""
-              }`}
-            >
-              {daysOfWeek.map((day, i) => (
-                <CalendarColumn
-                  key={i}
-                  dayIndex={i}
-                  day={day}
-                  currentWeek={currentWeek}
-                  isFetching={isFetching}
-                  reservedVisitDates={reservedVisitDates ?? []}
-                  selectedReservationDate={selectedReservationDate}
-                  setSelectedReservationDate={setSelectedReservationDate}
-                />
-              ))}
-            </div>
+          {calendarColumns ? (
+            <PublicCalendar
+              contextValue={{
+                handleCellClick,
+                getCellColor,
+              }}
+              calendarColumns={calendarColumns}
+            />
           ) : (
             <>
               <p className="text-center text-xl">Brak wolnych terminów.</p>
@@ -85,7 +88,7 @@ const CalendarSection = () => {
             </>
           )}
         </div>
-        <ReservationForm selectedReservationDate={selectedReservationDate} />
+        <ReservationForm selectedCell={selectedCell} />
         <div className="flex flex-col items-center justify-center space-y-4 align-middle"></div>
       </div>
     </section>

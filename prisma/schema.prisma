@@ -70,28 +70,24 @@ model InquiryForm {
   createdAt   DateTime @default(now())
 }
 
-model AvailableVisitDate {
+model AvailableVisit {
   id               String            @id @default(cuid())
-  date             DateTime          @map("date") @db.DateTime(0)
-  from             String
-  to               String
+  dateFrom         DateTime          @map("dateFrom") @db.DateTime(0)
+  dateTo           DateTime          @map("dateTo") @db.DateTime(0)
   visitReservation VisitReservation?
 
-  @@unique([date, from, to])
+  @@unique([dateFrom, dateTo])
 }
 
 model VisitReservation {
-  id                   String             @id @default(cuid())
-  date                 DateTime           @map("date") @db.DateTime(0)
-  from                 String
-  to                   String
-  confirmedByCustomer  Boolean?           @default(false)
-  confirmedByOwner     Boolean?           @default(false)
-  name                 String
-  phoneNumber          String
-  email                String
-  message              String?
-  availableVisitDate   AvailableVisitDate @relation(fields: [availableVisitDateId], references: [id])
-  availableVisitDateId String             @unique
-  createdAt            DateTime           @default(now())
+  id                  String         @id @default(cuid())
+  confirmedByCustomer Boolean?       @default(false)
+  confirmedByOwner    Boolean?       @default(false)
+  name                String
+  phoneNumber         String
+  email               String
+  message             String?
+  availableVisit      AvailableVisit @relation(fields: [visitId], references: [id])
+  visitId             String         @unique
+  createdAt           DateTime       @default(now())
 }

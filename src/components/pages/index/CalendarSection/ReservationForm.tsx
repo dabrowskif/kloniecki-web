@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { api } from "~/utils/api";
+import { Calendar } from "~/utils/calendar";
+import { type ColumnCell } from "~/utils/calendar/types";
 
 interface IReservationFormProps {
-  selectedReservationDate:
-    | { from: string; to: string; date: string }
-    | undefined;
+  selectedCell: ColumnCell | undefined;
 }
 
 const ReservationForm = (props: IReservationFormProps) => {
-  const { selectedReservationDate } = props;
-
+  const { selectedCell } = props;
+  const ctx = api.useContext();
   const [formSuccess, setFormSuccess] = useState("");
   const [formError, setFormError] = useState("");
 
@@ -18,6 +18,7 @@ const ReservationForm = (props: IReservationFormProps) => {
       onSuccess: () => {
         setFormError("");
         setFormSuccess("Pomyślnie wysłano wiadomość!");
+        void ctx.calendar.getPublicCalendar.invalidate();
       },
       onError: (e) => {
         setFormSuccess("");
@@ -27,8 +28,12 @@ const ReservationForm = (props: IReservationFormProps) => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
-    createVisitReservation({ ...formData, date: selectedReservationDate! });
+    if (!selectedCell) return;
+    createVisitReservation({
+      ...formData,
+      dateFrom: selectedCell.dateFrom,
+      dateTo: selectedCell.dateTo,
+    });
   };
 
   const handleChange = (event: any) => {
@@ -110,8 +115,13 @@ const ReservationForm = (props: IReservationFormProps) => {
               id="date"
               name="date"
               value={
-                selectedReservationDate
-                  ? `${selectedReservationDate.date} od ${selectedReservationDate.from} do ${selectedReservationDate.to}`
+                selectedCell
+                  ? `${Calendar.formatDate(
+                      selectedCell.dateFrom,
+                      "DateWithYear"
+                    )} od ${Calendar.getHourOfDate(
+                      selectedCell.dateFrom
+                    )} do ${Calendar.getHourOfDate(selectedCell.dateTo)}`
                   : ""
               }
               // eslint-disable-next-line @typescript-eslint/no-empty-function

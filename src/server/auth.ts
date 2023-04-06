@@ -56,8 +56,6 @@ export const authOptions: NextAuthOptions = {
           },
         });
         session.user.google_access_token = data?.access_token ?? undefined;
-        // console.log(user);
-        // session.user.role = user.role; <-- put other properties on the session here
       }
       return session;
     },
@@ -75,7 +73,6 @@ export const authOptions: NextAuthOptions = {
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
       authorization: {
-        // url: "https://accounts.google.com/o/oauth2/v2/auth?prompt=consent&access_type=offline&response_type=code",
         params: {
           prompt: "consent",
           access_type: "offline",
@@ -93,11 +90,6 @@ export const authOptions: NextAuthOptions = {
   },
 };
 
-/**
- * Wrapper for `getServerSession` so that you don't need to import the `authOptions` in every file.
- *
- * @see https://next-auth.js.org/configuration/nextjs
- */
 export const getServerAuthSession = (ctx: {
   req: GetServerSidePropsContext["req"];
   res: GetServerSidePropsContext["res"];
