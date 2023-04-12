@@ -1,3 +1,6 @@
+import { type AvailableVisit, type VisitReservation } from "@prisma/client";
+import { type calendar_v3 } from "googleapis";
+
 export interface DateRange<T = Date> {
   from: T;
   to: T;
@@ -24,36 +27,39 @@ export type PublicCalendarCell = {
   occupation: "available" | "unavailable";
 };
 
-export type PrivateCalendarCell =
-  | ({
-      dateFrom: Date;
-      dateTo: Date;
-    } & {
-      occupation: "available" | "unconfirmed" | "confirmed";
-      availableVisitId?: string;
-    })
+export type PrivateRawCell =
   | {
-      occupation: "google_event";
-      googleEvent: {
-        name: string;
-        description: string;
+      type: "google";
+      data: calendar_v3.Schema$Event;
+    }
+  | {
+      type: "default";
+      data: AvailableVisit & {
+        visitReservation: VisitReservation | null;
       };
     };
 
-// export type CalendarCell = {
-//   dateFrom: Date;
-//   dateTo: Date;
-// } & (
-//   | {
-//       occupation: "available" | "unavailable" | "reserved";
-//       availableVisitId?: string;
-//       googleEvent?: never;
-//     }
-//   | {
-//       occupation: "google_event";
-//       availableVisitId?: never;
-//     }
-// );
+export type PrivateCalendarCell = {
+  dateFrom: Date;
+  dateTo: Date;
+} & (
+  | {
+      occupation: "none";
+      availableVisitId?: never;
+    }
+  | {
+      occupation: "available" | "unconfirmed" | "confirmed";
+      availableVisitId: string;
+    }
+  | {
+      occupation: "google_event";
+      availableVisitId?: never;
+      googleEvent: {
+        name: string;
+        description?: string;
+      };
+    }
+);
 
 export type TimeRange = {
   from: string;

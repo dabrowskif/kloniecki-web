@@ -13,7 +13,7 @@ export class Calendar {
     const startTime = 8;
     const endTime = 17.5;
     const interval = 0.5;
-    const availableTimes = [];
+    const timeRanges = [];
 
     for (let i = startTime; i < endTime; i += interval) {
       const fromHour = i < 10 ? `0${Math.floor(i)}` : `${Math.floor(i)}`;
@@ -21,13 +21,13 @@ export class Calendar {
         i + interval < 10
           ? `0${Math.floor(i + interval)}`
           : `${Math.floor(i + interval)}`;
-      availableTimes.push({
+      timeRanges.push({
         from: `${fromHour}:${i % 1 === 0.5 ? "30" : "00"}`,
         to: `${toHour}:${i % 1 === 0 ? "30" : "00"}`,
       });
     }
 
-    return availableTimes;
+    return timeRanges;
   };
 
   static getHourOfDate = (date: Date) => {

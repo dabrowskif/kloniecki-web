@@ -4,7 +4,7 @@ import { type CalendarColumn } from "~/utils/calendar/types";
 import PrivateCalendarCell from "./PrivateCalendarCell";
 
 interface IPrivateCalendarColumnProps {
-  calendarColumn: CalendarColumn;
+  calendarColumn: CalendarColumn<PrivateCalendarCell>;
 }
 const PrivateCalendarColumn = (props: IPrivateCalendarColumnProps) => {
   const { calendarColumn } = props;

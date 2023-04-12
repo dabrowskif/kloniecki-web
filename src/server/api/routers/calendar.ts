@@ -16,6 +16,7 @@ import {
   type TimeRange,
   type PrivateCalendarCell,
   type PublicCalendarCell,
+  type PrivateRawCell,
 } from "~/utils/calendar/types";
 import { getPrivateCalendarColumn } from "../helpers/privateCalendar";
 import { getPublicCalendarColumn } from "../helpers/publicCalendar";
@@ -51,7 +52,7 @@ export const calendarRouter = createTRPCRouter({
           timeRanges,
           availableVisits
         );
-        console.log(availableVisits);
+
         return days.map((_, i): CalendarColumn<PublicCalendarCell> => {
           const date = Calendar.getDateOfWeekDay(input.weekStartDate, i + 1);
           return getPublicCalendarColumn(
@@ -81,7 +82,6 @@ export const calendarRouter = createTRPCRouter({
       async ({ input, ctx }): Promise<VisitsCalendar<PrivateCalendarCell>> => {
         try {
           const { google_access_token } = ctx.session.user;
-
           if (!google_access_token) {
             throw new TRPCError({
               code: "FORBIDDEN",
@@ -102,7 +102,7 @@ export const calendarRouter = createTRPCRouter({
               visitReservation: true,
             },
           });
-          console.log(google_access_token);
+
           const googleCalendarService = new GoogleCalendarService(
             google_access_token
           );
@@ -113,15 +113,32 @@ export const calendarRouter = createTRPCRouter({
               input.weekEndDate
             );
 
-          console.log("######## EVENTY #######");
-          console.log(googleEvents);
-
           const days = Calendar.getDays();
           const timeRanges = Calendar.getTimeRanges();
 
+          const rawCells = [
+            ...googleEvents?.map(
+              (event) =>
+                ({
+                  type: "google",
+                  data: event,
+                } as PrivateRawCell)
+            ),
+            ...availableVisits.map(
+              (visit) =>
+                ({
+                  type: "default",
+                  data: visit,
+                } as PrivateRawCell)
+            ),
+          ];
+
+          console.log("######");
+          console.log(rawCells);
+
           return days.map((_, i): CalendarColumn<PrivateCalendarCell> => {
             const date = Calendar.getDateOfWeekDay(input.weekStartDate, i + 1);
-            return getPrivateCalendarColumn(date, availableVisits, timeRanges);
+            return getPrivateCalendarColumn(date, rawCells, timeRanges);
           });
         } catch (e) {
           console.log(e);

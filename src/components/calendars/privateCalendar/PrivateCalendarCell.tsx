@@ -2,10 +2,10 @@ import React, { useContext } from "react";
 import { toast } from "react-toastify";
 import { api } from "~/utils/api";
 import { Calendar } from "~/utils/calendar";
-import { type CalendarCell } from "~/utils/calendar/types";
+import { type PrivateCalendarCell } from "~/utils/calendar/types";
 
 interface IPrivateCalendarCellProps {
-  columnCell: CalendarCell;
+  columnCell: PrivateCalendarCell;
 }
 
 const PrivateCalendarCell = (props: IPrivateCalendarCellProps) => {
@@ -43,14 +43,17 @@ const PrivateCalendarCell = (props: IPrivateCalendarCellProps) => {
     });
 
   const getCellColor = () => {
+    if (occupation === "google_event") {
+      return "bg-red-500 text-white";
+    }
     if (occupation === "available") {
       return "bg-blue-700 text-white";
     }
-    if (occupation === "reserved") {
-      return "bg-green-500 text-white";
+    if (occupation === "confirmed") {
+      return "bg-green-500 text-dark";
     }
-    if (occupation === "unavailable") {
-      return "bg-white text-dark";
+    if (occupation === "unconfirmed") {
+      return "bg-green-100 text-dark";
     }
     return "";
   };
@@ -58,14 +61,16 @@ const PrivateCalendarCell = (props: IPrivateCalendarCellProps) => {
   const handleCellClick = () => {
     if (occupation === "available") {
       availableVisitId && deleteAvailableVisitDate({ id: availableVisitId });
+      return;
     }
-    if (occupation === "unavailable") {
+    if (occupation === "none") {
       createAvailableVisitDate({ dateFrom, dateTo });
     }
   };
 
   return (
     <button
+      disabled={occupation === "google_event"}
       className={`transition-colors duration-150 ${getCellColor()}`}
       onClick={handleCellClick}
     >

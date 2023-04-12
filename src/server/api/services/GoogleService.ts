@@ -22,32 +22,35 @@ export class GoogleCalendarService {
   getEventsWithinDateRange = async (dateFrom: Date, dateTo: Date) => {
     const events = await this.calendar.events.list({
       calendarId: "primary",
-      // timeMin: dateFrom.toISOString(),
-      // timeMax: dateTo.toISOString(),
+      timeMin: dateFrom.toISOString(),
+      timeMax: dateTo.toISOString(),
       singleEvents: true,
       orderBy: "startTime",
     });
-    console.log(events);
-    return this.convertEventsToCalendarCells(events.data.items);
+
+    return events.data.items ?? [];
+    // return this.convertEventsToCalendarCells(events.data.items);
   };
 
-  private convertEventsToCalendarCells = (
-    events: calendar_v3.Schema$Event[] | undefined
-  ): PrivateCalendarCell[] => {
-    console.log(!events);
-    console.log(!events?.length);
+  // private convertEventsToCalendarCells = (
+  //   events: calendar_v3.Schema$Event[] | undefined
+  // ): PrivateCalendarCell[] => {
+  //   if (!events || events?.length === 0) return [];
 
-    console.log(events);
-    if (!events || events?.length === 0) return [];
-    const calendarCells: PrivateCalendarCell[] = [];
-    for (const event of events) {
-      // if (!event.start?.date|| !event.end.date) return;
-      // calendarCells.push({
-      //  dateFrom: Calendar.formatDate(event.start.date, 'DateWithYear'),
-      //  dateTo: event.end.date,
-      //   occupation: "google_event",
-      // });
-    }
-    return calendarCells;
-  };
+  //   const calendarCells: PrivateCalendarCell[] = [];
+
+  //   for (const event of events) {
+  //     if (event?.start?.dateTime && event?.end?.dateTime) {
+  //       calendarCells.push({
+  //         dateFrom: new Date(event.start.dateTime),
+  //         dateTo: new Date(event.end.dateTime),
+  //         occupation: "google_event",
+  //         googleEvent: {
+  //           name: event?.summary ?? "",
+  //         },
+  //       });
+  //     }
+  //   }
+  //   return calendarCells;
+  // };
 }
