@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { api } from "~/utils/api";
 import { Calendar } from "~/utils/calendar";
-import { type ColumnCell } from "~/utils/calendar/types";
+import { type PublicCalendarCell } from "~/utils/calendar/types";
 
 interface IReservationFormProps {
-  selectedCell: ColumnCell | undefined;
+  selectedCell: PublicCalendarCell | undefined;
 }
 
 const ReservationForm = (props: IReservationFormProps) => {
