@@ -125,6 +125,7 @@ const refreshGoogleAccessToken = async (session: Session) => {
       const tokens: TokenSet & { expires_in: number } = await response.json();
 
       if (!response.ok) throw tokens;
+
       if (tokens?.expires_in) {
         await prisma.account.update({
           data: {

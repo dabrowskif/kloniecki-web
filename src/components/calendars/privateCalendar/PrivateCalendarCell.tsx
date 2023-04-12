@@ -2,10 +2,10 @@ import React, { useContext } from "react";
 import { toast } from "react-toastify";
 import { api } from "~/utils/api";
 import { Calendar } from "~/utils/calendar";
-import { type ColumnCell } from "~/utils/calendar/types";
+import { type CalendarCell } from "~/utils/calendar/types";
 
 interface IPrivateCalendarCellProps {
-  columnCell: ColumnCell;
+  columnCell: CalendarCell;
 }
 
 const PrivateCalendarCell = (props: IPrivateCalendarCellProps) => {
@@ -15,7 +15,7 @@ const PrivateCalendarCell = (props: IPrivateCalendarCellProps) => {
   const { mutate: createAvailableVisitDate } =
     api.availableVisit.create.useMutation({
       onSuccess: () => {
-        toast.success("Dodano datę wizyty");
+        toast.success("Dodano dostępną wizyty");
       },
       onError: (e) => {
         toast.error(e.message, {
@@ -30,7 +30,7 @@ const PrivateCalendarCell = (props: IPrivateCalendarCellProps) => {
   const { mutate: deleteAvailableVisitDate } =
     api.availableVisit.delete.useMutation({
       onSuccess: () => {
-        toast.success("Dodano datę wizyty");
+        toast.success("Usunięto dostępną wizytę");
       },
       onError: (e) => {
         toast.error(e.message, {

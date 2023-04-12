@@ -1,10 +1,13 @@
 import React from "react";
 import { Calendar } from "~/utils/calendar";
-import { type CalendarColumn } from "~/utils/calendar/types";
+import {
+  type PublicCalendarCell,
+  type CalendarColumn,
+} from "~/utils/calendar/types";
 import ColumnCell from "./PublicCalendarCell";
 
 interface IPublicCalendarColumnProps {
-  calendarColumn: CalendarColumn;
+  calendarColumn: CalendarColumn<PublicCalendarCell>;
 }
 const PublicCalendarColumn = (props: IPublicCalendarColumnProps) => {
   const { calendarColumn } = props;
@@ -12,12 +15,12 @@ const PublicCalendarColumn = (props: IPublicCalendarColumnProps) => {
 
   return (
     <div className="flex flex-col">
-      <div className="p-2 text-center text-blue-700">
+      <div className="bg-blue-700 p-2 text-center text-white">
         {day} {Calendar.formatDate(date, "DateWithoutYear")}
       </div>
       <hr />
       {columnCells.map((cell, i) => (
-        <ColumnCell key={i} columnCell={cell} />
+        <ColumnCell key={i} cell={cell} />
       ))}
     </div>
   );

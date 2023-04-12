@@ -3,7 +3,7 @@ import { Calendar } from "~/utils/calendar";
 import {
   type TimeRange,
   type CalendarColumn,
-  type ColumnCell,
+  type PublicCalendarCell,
 } from "~/utils/calendar/types";
 
 export const getPublicCalendarColumn = (
@@ -12,7 +12,7 @@ export const getPublicCalendarColumn = (
     visitReservation: VisitReservation | null;
   })[],
   timeRanges: TimeRange[]
-): CalendarColumn => {
+): CalendarColumn<PublicCalendarCell> => {
   const day = Calendar.getDay(date);
   const columnCells = timeRanges.map((timeRange) =>
     getColumnCell(timeRange, date, availableVisits)
@@ -34,7 +34,7 @@ const getColumnCell = (
   availableVisits: (AvailableVisit & {
     visitReservation: VisitReservation | null;
   })[]
-): ColumnCell => {
+): PublicCalendarCell => {
   const dateFrom = Calendar.addTimeToDate(date, timeRange.from);
   const dateTo = Calendar.addTimeToDate(date, timeRange.to);
 
@@ -49,7 +49,7 @@ const getColumnCell = (
     dateTo: dateTo,
     occupation:
       availableVisit?.visitReservation || !availableVisit
-        ? "reserved"
+        ? "unavailable"
         : "available",
   };
 };

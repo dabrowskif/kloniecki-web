@@ -1,24 +1,24 @@
 import React, { useContext } from "react";
 import { Calendar } from "~/utils/calendar";
-import { type ColumnCell } from "~/utils/calendar/types";
 import { CalendarContext } from "./PublicCalendar";
+import { type PublicCalendarCell as TPublicCalendarCell } from "~/utils/calendar/types";
 
 interface IPublicCalendarCellProps {
-  columnCell: ColumnCell;
+  cell: TPublicCalendarCell;
 }
 
 const PublicCalendarCell = (props: IPublicCalendarCellProps) => {
-  const { columnCell } = props;
-  const { dateFrom, dateTo } = columnCell;
+  const { cell } = props;
+  const { dateFrom, dateTo } = cell;
   const { handleCellClick, getCellColor } = useContext(CalendarContext);
 
-  const cellStyle = getCellColor(columnCell);
+  const cellStyle = getCellColor(cell);
 
   return (
     <button
       className={`transition-colors duration-150 ${cellStyle}`}
-      disabled={columnCell.occupation !== "available"}
-      onClick={() => handleCellClick(columnCell)}
+      disabled={cell.occupation !== "available"}
+      onClick={() => handleCellClick(cell)}
     >
       <div className="p-2 text-center">
         {Calendar.getHourOfDate(dateFrom)} - {Calendar.getHourOfDate(dateTo)}

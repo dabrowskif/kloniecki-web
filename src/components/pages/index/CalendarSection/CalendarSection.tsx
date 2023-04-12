@@ -6,7 +6,7 @@ import { Calendar } from "~/utils/calendar";
 import {
   type VisitsCalendar,
   type DateRange,
-  type ColumnCell,
+  type PublicCalendarCell,
 } from "~/utils/calendar/types";
 import ReservationForm from "./ReservationForm";
 import WeekPagination from "../../../calendars/CalendarPagination";
@@ -17,9 +17,11 @@ const CalendarSection = () => {
     from: Calendar.getWeekStartDate(),
     to: Calendar.getWeekEndDate(),
   });
-  const [calendarColumns, setCalendarColumns] = useState<VisitsCalendar>([]);
+  const [calendarColumns, setCalendarColumns] = useState<
+    VisitsCalendar<PublicCalendarCell>
+  >([]);
 
-  const [selectedCell, setSelectedCell] = useState<ColumnCell>();
+  const [selectedCell, setSelectedCell] = useState<PublicCalendarCell>();
 
   const { data: visitsCalendarData, isFetching } =
     api.calendar.getPublicCalendar.useQuery({
@@ -40,11 +42,11 @@ const CalendarSection = () => {
     }
   }, [isFetching, visitsCalendarData]);
 
-  const handleCellClick = (cell: ColumnCell) => {
+  const handleCellClick = (cell: PublicCalendarCell) => {
     setSelectedCell(cell);
   };
 
-  const getCellColor = (cell: ColumnCell) => {
+  const getCellColor = (cell: PublicCalendarCell) => {
     if (
       selectedCell &&
       Calendar.areDatesEqual(selectedCell?.dateFrom, cell.dateFrom, "minute") &&
@@ -55,7 +57,7 @@ const CalendarSection = () => {
     if (cell.occupation === "available") {
       return "bg-white text-dark-700";
     }
-    if (cell.occupation === "reserved") {
+    if (cell.occupation === "unavailable") {
       return "bg-gray-100 text-gray-400";
     }
     return "";
@@ -63,7 +65,7 @@ const CalendarSection = () => {
 
   return (
     <section id="kalendarz" className="bg-white p-10">
-      <div className="justify-content-center flex flex-col items-center">
+      <div className="flex flex-col items-center">
         <div className="w-9/12 ">
           <WeekPagination
             currentWeek={currentWeek}

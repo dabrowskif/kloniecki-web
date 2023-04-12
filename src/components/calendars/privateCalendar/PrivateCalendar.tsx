@@ -1,10 +1,5 @@
-import React, { createContext, type Context } from "react";
-import { Calendar } from "~/utils/calendar";
-import {
-  type CalendarColumn,
-  type ColumnCell,
-  type VisitsCalendar,
-} from "~/utils/calendar/types";
+import React from "react";
+import { type CalendarCell, type CalendarColumn } from "~/utils/calendar/types";
 import PrivateCalendarColumn from "./PrivateCalendarColumn";
 
 interface IPrivateCalendarProps {
@@ -26,5 +21,5 @@ const PrivateCalendar = (props: IPrivateCalendarProps) => {
 export default PrivateCalendar;
 
 export interface PrivateCalendarContextValue {
-  handleCellClick: (cell: ColumnCell) => void;
+  handleCellClick: (cell: CalendarCell) => void;
 }

@@ -3,7 +3,7 @@ import { Calendar } from "~/utils/calendar";
 import {
   type TimeRange,
   type CalendarColumn,
-  type ColumnCell,
+  type PrivateCalendarCell,
 } from "~/utils/calendar/types";
 
 export const getPrivateCalendarColumn = (
@@ -12,7 +12,7 @@ export const getPrivateCalendarColumn = (
     visitReservation: VisitReservation | null;
   })[],
   timeRanges: TimeRange[]
-): CalendarColumn => {
+): CalendarColumn<PrivateCalendarCell> => {
   const day = Calendar.getDay(date);
   const columnCells = timeRanges.map((timeRange) =>
     getColumnCell(timeRange, date, availableVisits)
@@ -34,7 +34,7 @@ const getColumnCell = (
   availableVisits: (AvailableVisit & {
     visitReservation: VisitReservation | null;
   })[]
-): ColumnCell => {
+): PrivateCalendarCell => {
   const dateFrom = Calendar.addTimeToDate(date, timeRange.from);
   const dateTo = Calendar.addTimeToDate(date, timeRange.to);
 
@@ -43,11 +43,13 @@ const getColumnCell = (
       Calendar.areDatesEqual(visit.dateFrom, date, "day") &&
       Calendar.getHourOfDate(visit.dateFrom) === timeRange.from
   );
+  // console.log(availableVisit?.visitReservation.)
 
   return {
     availableVisitId: availableVisit?.id,
     dateFrom: dateFrom,
     dateTo: dateTo,
+
     occupation: availableVisit?.visitReservation
       ? "reserved"
       : availableVisit

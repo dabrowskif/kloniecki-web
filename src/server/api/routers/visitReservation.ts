@@ -30,10 +30,11 @@ export const visitReservationRouter = createTRPCRouter({
             visitReservation: null,
           },
         })
-        .catch(() => {
+        .catch((e) => {
           throw new TRPCError({
             code: "INTERNAL_SERVER_ERROR",
             message: UNKNOWN_ERROR_FOR_USER,
+            cause: e,
           });
         });
 
@@ -58,10 +59,11 @@ export const visitReservationRouter = createTRPCRouter({
             },
           },
         })
-        .catch(() => {
+        .catch((e) => {
           throw new TRPCError({
             code: "INTERNAL_SERVER_ERROR",
             message: UNKNOWN_ERROR_FOR_USER,
+            cause: e,
           });
         });
 

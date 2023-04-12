@@ -1,10 +1,13 @@
 import React, { createContext, type Context } from "react";
 import { Calendar } from "~/utils/calendar";
-import { type CalendarColumn, type ColumnCell } from "~/utils/calendar/types";
+import {
+  type CalendarColumn,
+  type PublicCalendarCell,
+} from "~/utils/calendar/types";
 import PublicCalendarColumn from "./PublicCalendarColumn";
 
 interface IPublicCalendarProps {
-  calendarColumns: CalendarColumn[];
+  calendarColumns: CalendarColumn<PublicCalendarCell>[];
   contextValue: CalendarContextValue;
 }
 
@@ -25,8 +28,8 @@ const PublicCalendar = (props: IPublicCalendarProps) => {
 export default PublicCalendar;
 
 export interface CalendarContextValue {
-  handleCellClick: (cell: ColumnCell) => void;
-  getCellColor: (cell: ColumnCell) => string;
+  handleCellClick: (cell: PublicCalendarCell) => void;
+  getCellColor: (cell: PublicCalendarCell) => string;
 }
 
 export const CalendarContext = createContext<CalendarContextValue>({

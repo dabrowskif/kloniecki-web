@@ -13,11 +13,13 @@ import { Calendar } from "~/utils/calendar";
 import {
   type VisitsCalendar,
   type CalendarColumn,
-  type ColumnCell,
   type TimeRange,
+  type PrivateCalendarCell,
+  type PublicCalendarCell,
 } from "~/utils/calendar/types";
 import { getPrivateCalendarColumn } from "../helpers/privateCalendar";
 import { getPublicCalendarColumn } from "../helpers/publicCalendar";
+import { GoogleCalendarService } from "../services/GoogleService";
 
 export const calendarRouter = createTRPCRouter({
   getPublicCalendar: publicProcedure
@@ -27,7 +29,7 @@ export const calendarRouter = createTRPCRouter({
         weekEndDate: z.date(),
       })
     )
-    .query(async ({ input }): Promise<VisitsCalendar> => {
+    .query(async ({ input }): Promise<VisitsCalendar<PublicCalendarCell>> => {
       try {
         const availableVisits = await prisma.availableVisit.findMany({
           where: {
@@ -49,8 +51,8 @@ export const calendarRouter = createTRPCRouter({
           timeRanges,
           availableVisits
         );
-
-        return days.map((_, i): CalendarColumn => {
+        console.log(availableVisits);
+        return days.map((_, i): CalendarColumn<PublicCalendarCell> => {
           const date = Calendar.getDateOfWeekDay(input.weekStartDate, i + 1);
           return getPublicCalendarColumn(
             date,
@@ -75,36 +77,60 @@ export const calendarRouter = createTRPCRouter({
         weekEndDate: z.date(),
       })
     )
-    .query(async ({ input, ctx }): Promise<VisitsCalendar> => {
-      try {
-        const availableVisits = await prisma.availableVisit.findMany({
-          where: {
-            dateFrom: {
-              gte: input.weekStartDate,
-            },
-            dateTo: {
-              lte: input.weekEndDate,
-            },
-          },
-          include: {
-            visitReservation: true,
-          },
-        });
+    .query(
+      async ({ input, ctx }): Promise<VisitsCalendar<PrivateCalendarCell>> => {
+        try {
+          const { google_access_token } = ctx.session.user;
 
-        const days = Calendar.getDays();
-        const timeRanges = Calendar.getTimeRanges();
+          if (!google_access_token) {
+            throw new TRPCError({
+              code: "FORBIDDEN",
+              message: "Cannot access Google Calendar",
+            });
+          }
 
-        return days.map((_, i): CalendarColumn => {
-          const date = Calendar.getDateOfWeekDay(input.weekStartDate, i + 1);
-          return getPrivateCalendarColumn(date, availableVisits, timeRanges);
-        });
-      } catch (e) {
-        console.log(e);
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: UNKNOWN_ERROR_FOR_USER,
-          cause: e,
-        });
+          const availableVisits = await prisma.availableVisit.findMany({
+            where: {
+              dateFrom: {
+                gte: input.weekStartDate,
+              },
+              dateTo: {
+                lte: input.weekEndDate,
+              },
+            },
+            include: {
+              visitReservation: true,
+            },
+          });
+          console.log(google_access_token);
+          const googleCalendarService = new GoogleCalendarService(
+            google_access_token
+          );
+
+          const googleEvents =
+            await googleCalendarService.getEventsWithinDateRange(
+              input.weekStartDate,
+              input.weekEndDate
+            );
+
+          console.log("######## EVENTY #######");
+          console.log(googleEvents);
+
+          const days = Calendar.getDays();
+          const timeRanges = Calendar.getTimeRanges();
+
+          return days.map((_, i): CalendarColumn<PrivateCalendarCell> => {
+            const date = Calendar.getDateOfWeekDay(input.weekStartDate, i + 1);
+            return getPrivateCalendarColumn(date, availableVisits, timeRanges);
+          });
+        } catch (e) {
+          console.log(e);
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: UNKNOWN_ERROR_FOR_USER,
+            cause: e,
+          });
+        }
       }
-    }),
+    ),
 });
