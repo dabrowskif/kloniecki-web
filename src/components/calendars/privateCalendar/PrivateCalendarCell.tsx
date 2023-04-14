@@ -1,15 +1,23 @@
-import React, { useContext } from "react";
+import React, { MouseEventHandler, useContext } from "react";
 import { toast } from "react-toastify";
+import { FaInfoCircle } from "react-icons/fa";
+
 import { api } from "~/utils/api";
 import { Calendar } from "~/utils/calendar";
 import { type PrivateCalendarCell } from "~/utils/calendar/types";
 
 interface IPrivateCalendarCellProps {
-  columnCell: PrivateCalendarCell;
+  cell: PrivateCalendarCell;
 }
 
 const PrivateCalendarCell = (props: IPrivateCalendarCellProps) => {
-  const { dateFrom, dateTo, occupation, availableVisitId } = props.columnCell;
+  const {
+    dateFrom,
+    dateTo,
+    occupation,
+    availableVisitId,
+    data: cellData,
+  } = props.cell;
   const ctx = api.useContext();
 
   const { mutate: createAvailableVisitDate } =
@@ -44,7 +52,7 @@ const PrivateCalendarCell = (props: IPrivateCalendarCellProps) => {
 
   const getCellColor = () => {
     if (occupation === "google_event") {
-      return "bg-red-500 text-white";
+      return "bg-red-600 text-white";
     }
     if (occupation === "available") {
       return "bg-blue-700 text-white";
@@ -53,7 +61,7 @@ const PrivateCalendarCell = (props: IPrivateCalendarCellProps) => {
       return "bg-green-500 text-dark";
     }
     if (occupation === "unconfirmed") {
-      return "bg-green-100 text-dark";
+      return "bg-orange-500 text-white";
     }
     return "";
   };
@@ -61,10 +69,11 @@ const PrivateCalendarCell = (props: IPrivateCalendarCellProps) => {
   const handleCellClick = () => {
     if (occupation === "available") {
       availableVisitId && deleteAvailableVisitDate({ id: availableVisitId });
-      return;
-    }
-    if (occupation === "none") {
+    } else if (occupation === "none") {
       createAvailableVisitDate({ dateFrom, dateTo });
+    } else if (occupation === "confirmed" || occupation === "unconfirmed") {
+      console.log(cellData);
+    } else if (occupation === "google_event") {
     }
   };
 

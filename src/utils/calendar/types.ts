@@ -46,14 +46,17 @@ export type PrivateCalendarCell = {
   | {
       occupation: "none";
       availableVisitId?: never;
+      data: never;
     }
   | {
       occupation: "available" | "unconfirmed" | "confirmed";
       availableVisitId: string;
+      data: VisitReservation | null;
     }
   | {
       occupation: "google_event";
       availableVisitId?: never;
+      data: never;
       googleEvent: {
         name: string;
         description?: string;

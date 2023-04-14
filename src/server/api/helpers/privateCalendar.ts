@@ -45,8 +45,6 @@ const getColumnCell = (
       );
     }
     if (rawCell.type === "google" && rawCell.data.start?.dateTime) {
-      // console.log(new Date(rawCell.data.start.dateTime))
-      // console.log()
       return (
         Calendar.areDatesEqual(
           new Date(rawCell.data.start.dateTime),
@@ -72,6 +70,7 @@ const getColumnCell = (
         availableVisitId: availableVisit.data.id,
         dateFrom,
         dateTo,
+        data: availableVisit.data?.visitReservation,
         occupation: !availableVisit.data.visitReservation
           ? "available"
           : availableVisit.data.visitReservation.confirmedByCustomer

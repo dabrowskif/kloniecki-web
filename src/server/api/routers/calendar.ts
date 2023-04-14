@@ -133,9 +133,6 @@ export const calendarRouter = createTRPCRouter({
             ),
           ];
 
-          console.log("######");
-          console.log(rawCells);
-
           return days.map((_, i): CalendarColumn<PrivateCalendarCell> => {
             const date = Calendar.getDateOfWeekDay(input.weekStartDate, i + 1);
             return getPrivateCalendarColumn(date, rawCells, timeRanges);
