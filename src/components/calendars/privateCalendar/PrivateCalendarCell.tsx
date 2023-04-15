@@ -45,20 +45,20 @@ const PrivateCalendarCell = (props: IPrivateCalendarCellProps) => {
   });
 
   const getCellColor = (): string => {
-    let color = "";
-    if (occupation === PrivateCellOccupation.NONE) color = colorMap[occupation] ?? "";
-    if (occupation === PrivateCellOccupation.GOOGLE_EVENT) color = colorMap[occupation] ?? "";
+    let color;
+    if (occupation === PrivateCellOccupation.NONE) color = colorMap[occupation];
+    if (occupation === PrivateCellOccupation.GOOGLE_EVENT) color = colorMap[occupation];
     if (occupation === PrivateCellOccupation.DEFAULT) {
       if (!cellData.visitReservation) {
         const key = `${occupation}-AVAILABLE`;
-        color = colorMap[key] ?? "";
+        color = colorMap[key];
       } else {
         const key = `${occupation}-${cellData.visitReservation.customerConfirmationStatus}-${cellData.visitReservation.ownerConfirmationStatus}`;
-        color = colorMap[key] ?? "";
+        color = colorMap[key];
       }
     }
 
-    return color;
+    return color ?? "";
   };
 
   const handleCellClick = () => {
@@ -79,6 +79,7 @@ const PrivateCalendarCell = (props: IPrivateCalendarCellProps) => {
         data-tooltip-target="tooltip-default"
         disabled={occupation === PrivateCellOccupation.GOOGLE_EVENT}
         className={`transition-colors duration-150 ${getCellColor()}`}
+        // className="bg-gradient-to-r from-yellow-500 from-0% from-50% to-blue-500 to-100% to-50%"
         onClick={handleCellClick}
       >
         <div className="p-2 text-center">
@@ -96,13 +97,13 @@ const colorMap: Record<string, string> = {
   NONE: "bg-white text-dark-700 hover:bg-blue-400 hover:text-white",
   GOOGLE_EVENT: "bg-fuchsia-500 text-white",
   "DEFAULT-AVAILABLE": "bg-blue-700 hover:bg-blue-600 text-white",
-  "DEFAULT-CONFIRMED-CONFIRMED": "",
-  "DEFAULT-CONFIRMED-PENDING": "",
-  "DEFAULT-CONFIRMED-CANCELED": "",
-  "DEFAULT-PENDING-CONFIRMED": "bg-green-500 text-white",
+  "DEFAULT-CONFIRMED-CONFIRMED": "bg-green-500 text-white",
+  "DEFAULT-CONFIRMED-PENDING": "bg-blue-100 text-white",
+  "DEFAULT-CONFIRMED-CANCELED": "bg-red-500 text-white",
+  "DEFAULT-PENDING-CONFIRMED": "bg-yellow-300 text-white",
   "DEFAULT-PENDING-PENDING": "bg-yellow-300 text-white",
   "DEFAULT-PENDING-CANCELED": "bg-red-500 text-white",
-  "DEFAULT-CANCELED-CONFIRMED": "",
+  "DEFAULT-CANCELED-CONFIRMED": "bg-red-500 text-white",
   "DEFAULT-CANCELED-PENDING": "bg-red-500 text-white",
   "DEFAULT-CANCELED-CANCELED": "bg-red-500 text-white",
 };

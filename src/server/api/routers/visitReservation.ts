@@ -1,7 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
 import { prisma } from "~/server/db";
 import { UNKNOWN_ERROR_FOR_USER } from "~/server/lib/errorMessages";
 import { useMailService } from "~/server/lib/nodemailer";
@@ -85,4 +85,20 @@ export const visitReservationRouter = createTRPCRouter({
         })
         .catch((e) => console.log(e));
     }),
+  changeUserConfirmation: publicProcedure
+    .input(
+      z.object({
+        userConfirmationToken: z.string(),
+        shouldConfirm: z.boolean(),
+      })
+    )
+    .mutation(async ({ input }) => {}),
+  changeOwnerCOnfirmation: protectedProcedure
+    .input(
+      z.object({
+        userConfirmationToken: z.string(),
+        shouldConfirm: z.boolean(),
+      })
+    )
+    .mutation(async ({ input }) => {}),
 });

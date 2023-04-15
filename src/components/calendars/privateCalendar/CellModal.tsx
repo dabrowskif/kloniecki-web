@@ -33,7 +33,7 @@ const CellModal = (props: ICellModalProps) => {
   if (cell?.occupation !== PrivateCellOccupation.DEFAULT || !cell.data.visitReservation) {
     return null;
   }
-
+  console.log(cell);
   return (
     <>
       <div

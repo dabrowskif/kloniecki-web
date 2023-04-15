@@ -89,7 +89,7 @@ enum ConfirmationStatus {
 model VisitReservation {
   id                         String             @id @default(cuid())
   customerConfirmationStatus ConfirmationStatus @default(PENDING)
-  ownerConfirmationStatus    ConfirmationStatus @default(PENDING)
+  ownerConfirmationStatus    ConfirmationStatus @default(CONFIRMED)
   name                       String
   phoneNumber                String
   email                      String
