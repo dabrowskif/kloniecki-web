@@ -10,8 +10,24 @@ html {
   @apply rounded-sm border border-transparent bg-blue-700 py-2 text-center text-base font-medium text-white hover:bg-blue-600;
 }
 
+.button-primary-outlined {
+  @apply rounded-sm border border-blue-700 py-2 text-center text-base font-medium text-blue-700 hover:bg-blue-700 hover:text-white;
+}
+
 .button-primary-disabled {
   @apply rounded-sm border border-transparent  bg-blue-200 py-2 text-center text-base font-medium text-white hover:bg-blue-300;
+}
+
+.button-success {
+  @apply rounded-sm border border-transparent bg-green-500 py-2 text-center text-base font-medium text-white hover:bg-green-400;
+}
+
+.button-danger {
+  @apply rounded-sm border border-transparent bg-red-500 py-2 text-center text-base font-medium text-white hover:bg-red-400;
+}
+
+.button-danger-outlined {
+  @apply rounded-sm border border-red-500 py-2 text-center text-base font-medium text-red-500 hover:bg-red-400 hover:text-white;
 }
 
 .focusable {

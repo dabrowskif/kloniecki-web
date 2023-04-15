@@ -12,10 +12,7 @@ import { useEffect } from "react";
 import Script from "next/script";
 import { ToastContainer } from "react-toastify";
 
-const MyApp: AppType<{ session: Session | null }> = ({
-  Component,
-  pageProps: { session, ...pageProps },
-}) => {
+const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { session, ...pageProps } }) => {
   useEffect(() => {
     AOS.init();
   }, []);

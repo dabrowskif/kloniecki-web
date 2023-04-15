@@ -3,11 +3,7 @@ import Image from "next/image";
 const ImageCarousel = () => {
   return (
     <section>
-      <div
-        id="default-carousel"
-        className="relative w-full"
-        data-carousel="slide"
-      >
+      <div id="default-carousel" className="relative w-full" data-carousel="slide">
         <div className="relative h-56 overflow-hidden md:h-96">
           <div className="hidden duration-700 ease-in-out" data-carousel-item>
             <Image
@@ -79,12 +75,7 @@ const ImageCarousel = () => {
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M15 19l-7-7 7-7"
-              ></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
             </svg>
             <span className="sr-only">Previous</span>
           </span>
@@ -103,12 +94,7 @@ const ImageCarousel = () => {
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 5l7 7-7 7"
-              ></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
             </svg>
             <span className="sr-only">Next</span>
           </span>

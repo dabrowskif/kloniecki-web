@@ -76,15 +76,10 @@ export const visitReservationRouter = createTRPCRouter({
           <p>Nowa rezerwacja</p>
           <p>Adres email: ${input.email}</p>
           <p>Imię i nazwisko: ${input.name}</p>
-          <p>Data: ${Calendar.formatDate(
-            input.dateFrom,
-            "DateWithYear"
-          )} od ${Calendar.formatDate(input.dateFrom, "HourWithMinutes")} do 
+          <p>Data: ${Calendar.formatDate(input.dateFrom, "DateWithYear")} od ${Calendar.formatDate(input.dateFrom, "HourWithMinutes")} do 
             ${Calendar.formatDate(input.dateTo, "HourWithMinutes")}
           </p>
-          <p>Numer telefonu: ${
-            input.phoneNumber ? input.phoneNumber : "brak"
-          }</p>
+          <p>Numer telefonu: ${input.phoneNumber ? input.phoneNumber : "brak"}</p>
           <p>Wiadomość: ${input?.message ? input.message : "brak"}</p>
         `,
         })

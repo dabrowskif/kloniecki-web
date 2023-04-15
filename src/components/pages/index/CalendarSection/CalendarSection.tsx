@@ -3,11 +3,7 @@
 import { useState, useEffect } from "react";
 import { api } from "~/utils/api";
 import { Calendar } from "~/utils/calendar";
-import {
-  type VisitsCalendar,
-  type DateRange,
-  type PublicCalendarCell,
-} from "~/utils/calendar/types";
+import { type VisitsCalendar, type DateRange, type PublicCalendarCell } from "~/utils/calendar/types";
 import ReservationForm from "./ReservationForm";
 import WeekPagination from "../../../calendars/CalendarPagination";
 import PublicCalendar from "~/components/calendars/publicCalendar/PublicCalendar";
@@ -17,17 +13,14 @@ const CalendarSection = () => {
     from: Calendar.getWeekStartDate(),
     to: Calendar.getWeekEndDate(),
   });
-  const [calendarColumns, setCalendarColumns] = useState<
-    VisitsCalendar<PublicCalendarCell>
-  >([]);
+  const [calendarColumns, setCalendarColumns] = useState<VisitsCalendar<PublicCalendarCell>>([]);
 
   const [selectedCell, setSelectedCell] = useState<PublicCalendarCell>();
 
-  const { data: visitsCalendarData, isFetching } =
-    api.calendar.getPublicCalendar.useQuery({
-      weekStartDate: currentWeek.from,
-      weekEndDate: currentWeek.to,
-    });
+  const { data: visitsCalendarData, isFetching } = api.calendar.getPublicCalendar.useQuery({
+    weekStartDate: currentWeek.from,
+    weekEndDate: currentWeek.to,
+  });
 
   const changeCurrentWeek = (weekOffset: number): void => {
     setCurrentWeek((prevState) => ({
@@ -55,7 +48,7 @@ const CalendarSection = () => {
       return "bg-blue-700 text-white";
     }
     if (cell.occupation === "available") {
-      return "bg-white text-dark-700";
+      return "bg-white text-dark-700 hover:bg-blue-500 hover:text-white";
     }
     if (cell.occupation === "unavailable") {
       return "bg-gray-100 text-gray-400";
@@ -67,10 +60,7 @@ const CalendarSection = () => {
     <section id="kalendarz" className="bg-white p-10">
       <div className="flex flex-col items-center">
         <div className="w-9/12 ">
-          <WeekPagination
-            currentWeek={currentWeek}
-            changeCurrentWeek={changeCurrentWeek}
-          />
+          <WeekPagination currentWeek={currentWeek} changeCurrentWeek={changeCurrentWeek} />
           <hr className="my-5  border-blue-500" />
           {calendarColumns ? (
             <PublicCalendar
@@ -83,10 +73,7 @@ const CalendarSection = () => {
           ) : (
             <>
               <p className="text-center text-xl">Brak wolnych terminów.</p>
-              <p className="text-center">
-                Mozesz skontaktować się ze mną osobiście, korzystając z
-                formularza powyzej.
-              </p>
+              <p className="text-center">Mozesz skontaktować się ze mną osobiście, korzystając z formularza powyzej.</p>
             </>
           )}
         </div>

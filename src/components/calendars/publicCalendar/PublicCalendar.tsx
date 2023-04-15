@@ -1,9 +1,6 @@
 import React, { createContext, type Context } from "react";
 import { Calendar } from "~/utils/calendar";
-import {
-  type CalendarColumn,
-  type PublicCalendarCell,
-} from "~/utils/calendar/types";
+import { type CalendarColumn, type PublicCalendarCell } from "~/utils/calendar/types";
 import PublicCalendarColumn from "./PublicCalendarColumn";
 
 interface IPublicCalendarProps {
@@ -33,8 +30,6 @@ export interface CalendarContextValue {
 }
 
 export const CalendarContext = createContext<CalendarContextValue>({
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   handleCellClick: () => {},
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   getCellColor: () => "",
 });

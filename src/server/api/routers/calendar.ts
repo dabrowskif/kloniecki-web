@@ -1,22 +1,16 @@
-import { type AvailableVisit, type VisitReservation } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
 import { prisma } from "~/server/db";
 import { UNKNOWN_ERROR_FOR_USER } from "~/server/lib/errorMessages";
 import { Calendar } from "~/utils/calendar";
 import {
   type VisitsCalendar,
   type CalendarColumn,
-  type TimeRange,
   type PrivateCalendarCell,
   type PublicCalendarCell,
-  type PrivateRawCell,
+  type RawPrivateCellData,
 } from "~/utils/calendar/types";
 import { getPrivateCalendarColumn } from "../helpers/privateCalendar";
 import { getPublicCalendarColumn } from "../helpers/publicCalendar";
@@ -48,18 +42,11 @@ export const calendarRouter = createTRPCRouter({
 
         const days = Calendar.getDays();
         const timeRanges = Calendar.getTimeRanges();
-        const filteredTimeRanges = Calendar.removeUnnecessaryTimeRanges(
-          timeRanges,
-          availableVisits
-        );
+        const filteredTimeRanges = Calendar.removeUnnecessaryTimeRanges(timeRanges, availableVisits);
 
         return days.map((_, i): CalendarColumn<PublicCalendarCell> => {
           const date = Calendar.getDateOfWeekDay(input.weekStartDate, i + 1);
-          return getPublicCalendarColumn(
-            date,
-            availableVisits,
-            filteredTimeRanges
-          );
+          return getPublicCalendarColumn(date, availableVisits, filteredTimeRanges);
         });
       } catch (e) {
         console.log(e);
@@ -78,73 +65,65 @@ export const calendarRouter = createTRPCRouter({
         weekEndDate: z.date(),
       })
     )
-    .query(
-      async ({ input, ctx }): Promise<VisitsCalendar<PrivateCalendarCell>> => {
-        try {
-          const { google_access_token } = ctx.session.user;
-          if (!google_access_token) {
-            throw new TRPCError({
-              code: "FORBIDDEN",
-              message: "Cannot access Google Calendar",
-            });
-          }
-
-          const availableVisits = await prisma.availableVisit.findMany({
-            where: {
-              dateFrom: {
-                gte: input.weekStartDate,
-              },
-              dateTo: {
-                lte: input.weekEndDate,
-              },
-            },
-            include: {
-              visitReservation: true,
-            },
-          });
-
-          const googleCalendarService = new GoogleCalendarService(
-            google_access_token
-          );
-
-          const googleEvents =
-            await googleCalendarService.getEventsWithinDateRange(
-              input.weekStartDate,
-              input.weekEndDate
-            );
-
-          const days = Calendar.getDays();
-          const timeRanges = Calendar.getTimeRanges();
-
-          const rawCells = [
-            ...googleEvents?.map(
-              (event) =>
-                ({
-                  type: "google",
-                  data: event,
-                } as PrivateRawCell)
-            ),
-            ...availableVisits.map(
-              (visit) =>
-                ({
-                  type: "default",
-                  data: visit,
-                } as PrivateRawCell)
-            ),
-          ];
-
-          return days.map((_, i): CalendarColumn<PrivateCalendarCell> => {
-            const date = Calendar.getDateOfWeekDay(input.weekStartDate, i + 1);
-            return getPrivateCalendarColumn(date, rawCells, timeRanges);
-          });
-        } catch (e) {
-          console.log(e);
+    .query(async ({ input, ctx }): Promise<VisitsCalendar<PrivateCalendarCell>> => {
+      try {
+        const { google_access_token } = ctx.session.user;
+        if (!google_access_token) {
           throw new TRPCError({
-            code: "INTERNAL_SERVER_ERROR",
-            message: UNKNOWN_ERROR_FOR_USER,
-            cause: e,
+            code: "FORBIDDEN",
+            message: "Cannot access Google Calendar",
           });
         }
+
+        const availableVisits = await prisma.availableVisit.findMany({
+          where: {
+            dateFrom: {
+              gte: input.weekStartDate,
+            },
+            dateTo: {
+              lte: input.weekEndDate,
+            },
+          },
+          include: {
+            visitReservation: true,
+          },
+        });
+
+        const googleCalendarService = new GoogleCalendarService(google_access_token);
+
+        const googleEvents = await googleCalendarService.getEventsWithinDateRange(input.weekStartDate, input.weekEndDate);
+
+        const days = Calendar.getDays();
+        const timeRanges = Calendar.getTimeRanges();
+
+        const rawPrivateCellsData = [
+          ...googleEvents?.map(
+            (event) =>
+              ({
+                type: "google",
+                data: event,
+              } as RawPrivateCellData)
+          ),
+          ...availableVisits.map(
+            (visit) =>
+              ({
+                type: "default",
+                data: visit,
+              } as RawPrivateCellData)
+          ),
+        ];
+
+        return days.map((_, i): CalendarColumn<PrivateCalendarCell> => {
+          const date = Calendar.getDateOfWeekDay(input.weekStartDate, i + 1);
+          return getPrivateCalendarColumn(date, rawPrivateCellsData, timeRanges);
+        });
+      } catch (e) {
+        console.log(e);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: UNKNOWN_ERROR_FOR_USER,
+          cause: e,
+        });
       }
-    ),
+    }),
 });

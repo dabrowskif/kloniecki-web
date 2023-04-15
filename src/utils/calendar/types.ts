@@ -27,7 +27,7 @@ export type PublicCalendarCell = {
   occupation: "available" | "unavailable";
 };
 
-export type PrivateRawCell =
+export type RawPrivateCellData =
   | {
       type: "google";
       data: calendar_v3.Schema$Event;
@@ -39,26 +39,30 @@ export type PrivateRawCell =
       };
     };
 
+export enum PrivateCellOccupation {
+  DEFAULT = "DEFAULT",
+  GOOGLE_EVENT = "GOOGLE_EVENT",
+  NONE = "NONE",
+}
+
 export type PrivateCalendarCell = {
   dateFrom: Date;
   dateTo: Date;
 } & (
   | {
-      occupation: "none";
-      availableVisitId?: never;
-      data: never;
+      occupation: PrivateCellOccupation.NONE;
+      data?: never;
     }
   | {
-      occupation: "available" | "unconfirmed" | "confirmed";
-      availableVisitId: string;
-      data: VisitReservation | null;
+      occupation: PrivateCellOccupation.DEFAULT;
+      data: AvailableVisit & {
+        visitReservation: VisitReservation | null;
+      };
     }
   | {
-      occupation: "google_event";
-      availableVisitId?: never;
-      data: never;
-      googleEvent: {
-        name: string;
+      occupation: PrivateCellOccupation.GOOGLE_EVENT;
+      data: {
+        name?: string | null;
         description?: string;
       };
     }
