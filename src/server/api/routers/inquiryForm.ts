@@ -29,14 +29,11 @@ export const inquiryFormRouter = createTRPCRouter({
 
         await mailService.sendMail({
           to: "filip.daabrowski@gmail.com",
-          from: "KlonieckiWeb filip.dabrowski@protonmail.com",
           subject: `Nowe zapytanie od ${input.email}`,
-          text: `Otrzymałeś nowe zapytanie od ${input.email}  Numer telefonu:${
-            input.phoneNumber ? input.phoneNumber : ""
-          } Wiadomość: ${input.message} `,
-          html: `Otrzymałeś nowe zapytanie od <a href="mailto:${input.email}">${
-            input.email
-          }</a> <br /> Numer telefonu: ${
+          text: `Otrzymałeś nowe zapytanie od ${input.email}  Numer telefonu:${input.phoneNumber ? input.phoneNumber : ""} Wiadomość: ${
+            input.message
+          } `,
+          html: `Otrzymałeś nowe zapytanie od <a href="mailto:${input.email}">${input.email}</a> <br /> Numer telefonu: ${
             input.phoneNumber ? input.phoneNumber : ""
           } <br/> <br /> ${input.message} `,
         });

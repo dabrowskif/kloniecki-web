@@ -1,9 +1,6 @@
 import React from "react";
 import { Calendar } from "~/utils/calendar";
-import {
-  type PublicCalendarCell,
-  type CalendarColumn,
-} from "~/utils/calendar/types";
+import { type PublicCalendarCell, type CalendarColumn } from "~/utils/calendar/types";
 import ColumnCell from "./PublicCalendarCell";
 
 interface IPublicCalendarColumnProps {
@@ -14,8 +11,8 @@ const PublicCalendarColumn = (props: IPublicCalendarColumnProps) => {
   const { date, day, columnCells } = calendarColumn;
 
   return (
-    <div className="flex flex-col">
-      <div className="bg-blue-700 p-2 text-center text-white">
+    <div className="flex flex-col border">
+      <div className="whitespace-nowrap bg-blue-700 p-2 text-center text-white">
         {day} {Calendar.formatDate(date, "DateWithoutYear")}
       </div>
       <hr />

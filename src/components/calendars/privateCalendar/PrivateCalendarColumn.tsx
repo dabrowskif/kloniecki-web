@@ -17,7 +17,7 @@ const PrivateCalendarColumn = (props: IPrivateCalendarColumnProps) => {
       </div>
       <hr />
       {columnCells.map((cell, i) => (
-        <PrivateCalendarCell key={i} columnCell={cell} />
+        <PrivateCalendarCell key={i} cell={cell} />
       ))}
     </div>
   );

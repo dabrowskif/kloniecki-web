@@ -17,10 +17,7 @@ export class Calendar {
 
     for (let i = startTime; i < endTime; i += interval) {
       const fromHour = i < 10 ? `0${Math.floor(i)}` : `${Math.floor(i)}`;
-      const toHour =
-        i + interval < 10
-          ? `0${Math.floor(i + interval)}`
-          : `${Math.floor(i + interval)}`;
+      const toHour = i + interval < 10 ? `0${Math.floor(i + interval)}` : `${Math.floor(i + interval)}`;
       timeRanges.push({
         from: `${fromHour}:${i % 1 === 0.5 ? "30" : "00"}`,
         to: `${toHour}:${i % 1 === 0 ? "30" : "00"}`,
@@ -46,6 +43,10 @@ export class Calendar {
     return dayjs(date).format("dddd");
   };
 
+  static compareDates = (firstDate: Date, secondDate: Date) => {
+    return dayjs(firstDate).diff(secondDate, "ms");
+  };
+
   static getDateOfWeekDay = (weekStartDate: Date, day: number) => {
     return dayjs(weekStartDate).day(day).toDate();
   };
@@ -58,11 +59,7 @@ export class Calendar {
     return dayjs(date).isBefore(dayjs(), "day");
   };
 
-  static areDatesEqual = (
-    date1: Date,
-    date2: Date,
-    precision: "minute" | "day"
-  ) => {
+  static areDatesEqual = (date1: Date, date2: Date, precision: "minute" | "day") => {
     return dayjs(date1).isSame(dayjs(date2), precision);
   };
 
@@ -74,11 +71,7 @@ export class Calendar {
     return dayjs().endOf("week").toDate();
   };
 
-  static changeWeek = (
-    currentWeek: Date,
-    weekOffset: number,
-    type: "week_start" | "week_end"
-  ) => {
+  static changeWeek = (currentWeek: Date, weekOffset: number, type: "week_start" | "week_end") => {
     return type === "week_start"
       ? dayjs(currentWeek).add(weekOffset, "week").startOf("week").toDate()
       : dayjs(currentWeek).add(weekOffset, "week").endOf("week").toDate();
@@ -112,8 +105,7 @@ export class Calendar {
         to: Calendar.getHourOfDate(visit.dateTo),
       }));
 
-    const { minTimeRange, maxTimeRange } =
-      Calendar.getMinAndMaxTimeRanges(availableTimeRanges);
+    const { minTimeRange, maxTimeRange } = Calendar.getMinAndMaxTimeRanges(availableTimeRanges);
 
     for (const timeRange of defaultTimeRanges) {
       const { from, to } = Calendar.timeRangeToNumber(timeRange);

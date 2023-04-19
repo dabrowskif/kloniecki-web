@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AiOutlineArrowRight } from "react-icons/ai";
 import { AiOutlineArrowLeft } from "react-icons/ai";
 import { Calendar } from "~/utils/calendar";
@@ -12,39 +12,39 @@ const WeekPagination = (props: IWeekPaginationProps) => {
   const { changeCurrentWeek, currentWeek } = props;
 
   // const [isNextWeekAvailable, setIsNextWeekAvailable] = useState(true);
-  // const [isPrevWeekAvailable, setIsPrevWeekAvailable] = useState(false);
+  const [isPrevWeekAvailable, setIsPrevWeekAvailable] = useState(false);
+
+  useEffect(() => {
+    if (Calendar.compareDates(currentWeek.from, Calendar.getWeekStartDate()) <= 0) {
+      setIsPrevWeekAvailable(false);
+    } else {
+      setIsPrevWeekAvailable(true);
+    }
+  }, [currentWeek]);
 
   return (
     <div className="flex items-center justify-center gap-10">
       <button
         type="button"
         className={`focusable p-2.5 text-center text-sm font-medium text-white  ${
-          // !isPrevWeekAvailable ? "button-primary-disabled" : "button-primary "
-          "button-primary"
+          !isPrevWeekAvailable ? "button-primary-disabled" : "button-primary "
         }`}
-        // disabled={!isPrevWeekAvailable}
+        disabled={!isPrevWeekAvailable}
         onClick={() => {
-          // setIsNextWeekAvailable(true);
-          // setIsPrevWeekAvailable(false);
           changeCurrentWeek(-1);
         }}
       >
         <AiOutlineArrowLeft size={20} />
       </button>
-      <h2>
-        {Calendar.formatDate(currentWeek.from, "DateWithYear")} -{" "}
-        {Calendar.formatDate(currentWeek.to, "DateWithYear")}
-      </h2>
+      <div className="block md:flex md:gap-5">
+        <h2 className="whitespace-nowrap">{Calendar.formatDate(currentWeek.from, "DateWithYear")}</h2>
+        <h2 className="text-center"> - </h2>
+        <h2 className="whitespace-nowrap">{Calendar.formatDate(currentWeek.to, "DateWithYear")}</h2>
+      </div>
       <button
         type="button"
-        className={`focusable p-2.5 text-center text-sm font-medium text-white  ${
-          // !isNextWeekAvailable ? "button-primary-disabled" : "button-primary "
-          "button-primary"
-        }`}
-        // disabled={!isNextWeekAvailable}
+        className={`focusable p-2.5 text-center text-sm font-medium text-white  ${"button-primary"}`}
         onClick={() => {
-          // setIsNextWeekAvailable(false);
-          // setIsPrevWeekAvailable(true);
           changeCurrentWeek(1);
         }}
       >

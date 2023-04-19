@@ -13,18 +13,17 @@ const ReservationForm = (props: IReservationFormProps) => {
   const [formSuccess, setFormSuccess] = useState("");
   const [formError, setFormError] = useState("");
 
-  const { mutate: createVisitReservation, isLoading: isSubmitting } =
-    api.visitReservation.create.useMutation({
-      onSuccess: () => {
-        setFormError("");
-        setFormSuccess("Pomyślnie wysłano wiadomość!");
-        void ctx.calendar.getPublicCalendar.invalidate();
-      },
-      onError: (e) => {
-        setFormSuccess("");
-        setFormError(e.message);
-      },
-    });
+  const { mutate: createVisitReservation, isLoading: isSubmitting } = api.visitReservation.create.useMutation({
+    onSuccess: () => {
+      setFormError("");
+      setFormSuccess("Pomyślnie zarezerowano! Proszę, oczekuj wiadomości potwierdzającej rezerwację.");
+      void ctx.calendar.getPublicCalendar.invalidate();
+    },
+    onError: (e) => {
+      setFormSuccess("");
+      setFormError(e.message);
+    },
+  });
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -49,14 +48,11 @@ const ReservationForm = (props: IReservationFormProps) => {
   });
 
   return (
-    <div className="mt-10 w-7/12">
-      <form onSubmit={handleSubmit} className="mb-5">
-        <div className="grid grid-cols-2 gap-5">
-          <div className="mb-6">
-            <label
-              htmlFor="phoneNumber"
-              className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-            >
+    <div className="mt-10 flex justify-center">
+      <form onSubmit={handleSubmit} className="md:9/12 mb-5 w-full lg:w-7/12">
+        <div className="grid grid-cols-2 gap-1 md:gap-3">
+          <div className="col-span-2 mb-6 md:col-span-1">
+            <label htmlFor="phoneNumber" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
               Imię i nazwisko *
             </label>
             <input
@@ -69,11 +65,8 @@ const ReservationForm = (props: IReservationFormProps) => {
               placeholder="Imię i nazwisko"
             />
           </div>
-          <div className="mb-6">
-            <label
-              htmlFor="phoneNumber"
-              className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-            >
+          <div className="col-span-2 mb-6 md:col-span-1">
+            <label htmlFor="phoneNumber" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
               Numer telefonu *
             </label>
             <input
@@ -86,11 +79,8 @@ const ReservationForm = (props: IReservationFormProps) => {
               placeholder="+48 500 500 500"
             />
           </div>
-          <div className="mb-6">
-            <label
-              htmlFor="email"
-              className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-            >
+          <div className="col-span-2 mb-6 md:col-span-1">
+            <label htmlFor="email" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
               Email *
             </label>
             <input
@@ -103,11 +93,8 @@ const ReservationForm = (props: IReservationFormProps) => {
               required
             />
           </div>
-          <div className="mb-6">
-            <label
-              htmlFor="date"
-              className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-            >
+          <div className="col-span-2 mb-6 md:col-span-1">
+            <label htmlFor="date" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
               Data *
             </label>
             <input
@@ -116,10 +103,7 @@ const ReservationForm = (props: IReservationFormProps) => {
               name="date"
               value={
                 selectedCell
-                  ? `${Calendar.formatDate(
-                      selectedCell.dateFrom,
-                      "DateWithYear"
-                    )} od ${Calendar.getHourOfDate(
+                  ? `${Calendar.formatDate(selectedCell.dateFrom, "DateWithYear")} od ${Calendar.getHourOfDate(
                       selectedCell.dateFrom
                     )} do ${Calendar.getHourOfDate(selectedCell.dateTo)}`
                   : ""
@@ -132,10 +116,7 @@ const ReservationForm = (props: IReservationFormProps) => {
           </div>
         </div>
         <div>
-          <label
-            htmlFor="message"
-            className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-          >
+          <label htmlFor="message" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
             Dodatkowe informacje
           </label>
           <textarea
@@ -147,11 +128,7 @@ const ReservationForm = (props: IReservationFormProps) => {
             placeholder="Dodatkowe informacje..."
           ></textarea>
         </div>
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="button-primary mt-5 px-20"
-        >
+        <button type="submit" disabled={isSubmitting} className="button-primary mt-5 px-20">
           {isSubmitting ? (
             <div className="flex">
               <svg

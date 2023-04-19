@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -42,6 +39,11 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+enum UserRole {
+  USER
+  ADMIN
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -50,6 +52,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  role          UserRole  @default(USER)
 }
 
 model VerificationToken {
@@ -59,8 +62,6 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
-
-// Custom schemas
 
 model InquiryForm {
   id          String   @id @default(cuid())
@@ -79,15 +80,22 @@ model AvailableVisit {
   @@unique([dateFrom, dateTo])
 }
 
+enum ConfirmationStatus {
+  PENDING
+  CONFIRMED
+  CANCELED
+}
+
 model VisitReservation {
-  id                  String         @id @default(cuid())
-  confirmedByCustomer Boolean?       @default(false)
-  confirmedByOwner    Boolean?       @default(false)
-  name                String
-  phoneNumber         String
-  email               String
-  message             String?
-  availableVisit      AvailableVisit @relation(fields: [visitId], references: [id])
-  visitId             String         @unique
-  createdAt           DateTime       @default(now())
+  id                         String             @id @default(cuid())
+  customerConfirmationStatus ConfirmationStatus @default(PENDING)
+  customerConfirmationToken  String             @unique
+  ownerConfirmationStatus    ConfirmationStatus @default(CONFIRMED)
+  name                       String
+  phoneNumber                String
+  email                      String
+  message                    String?            @db.Text
+  availableVisit             AvailableVisit     @relation(fields: [availableVisitId], references: [id])
+  availableVisitId           String             @unique
+  createdAt                  DateTime           @default(now())
 }

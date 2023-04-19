@@ -9,11 +9,7 @@ import Navbar from "~/components/general/Navbar";
 import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/utils/api";
 import { Calendar } from "~/utils/calendar";
-import {
-  type PrivateCalendarCell,
-  type DateRange,
-  type VisitsCalendar,
-} from "~/utils/calendar/types";
+import { type PrivateCalendarCell, type DateRange, type VisitsCalendar } from "~/utils/calendar/types";
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const session = await getServerAuthSession(ctx);
@@ -37,15 +33,12 @@ const Dashboard: NextPage = () => {
     from: Calendar.getWeekStartDate(),
     to: Calendar.getWeekEndDate(),
   });
-  const [calendarColumns, setCalendarColumns] = useState<
-    VisitsCalendar<PrivateCalendarCell>
-  >([]);
+  const [calendarColumns, setCalendarColumns] = useState<VisitsCalendar<PrivateCalendarCell>>([]);
 
-  const { data: privateCalendarData, isFetching } =
-    api.calendar.getPrivateCalendar.useQuery({
-      weekStartDate: currentWeek.from,
-      weekEndDate: currentWeek.to,
-    });
+  const { data: privateCalendarData, isFetching } = api.calendar.getPrivateCalendar.useQuery({
+    weekStartDate: currentWeek.from,
+    weekEndDate: currentWeek.to,
+  });
 
   const changeCurrentWeek = (weekOffset: number): void => {
     setCurrentWeek((prevState) => ({
@@ -68,21 +61,13 @@ const Dashboard: NextPage = () => {
           <h1 className="text-center text-xl tracking-tight sm:text-2xl md:text-3xl lg:text-4xl">
             Witaj w panelu zarządzania Kalendarzem Google
           </h1>
-          <h2 className="sm:text-1xl my-10 text-center text-lg tracking-tight md:text-2xl lg:text-3xl">
-            Twój kalendarz
-          </h2>
-          <div className="w-9/12 ">
-            <CalendarPagination
-              currentWeek={currentWeek}
-              changeCurrentWeek={changeCurrentWeek}
-            />
+          <h2 className="sm:text-1xl my-10 text-center text-lg tracking-tight md:text-2xl lg:text-3xl">Twój kalendarz</h2>
+          <div className="">
+            <CalendarPagination currentWeek={currentWeek} changeCurrentWeek={changeCurrentWeek} />
             <hr className="my-5  border-blue-500" />
             <PrivateCalendar calendarColumns={calendarColumns} />
             <div className="mt-20 flex justify-center">
-              <button
-                className="button-primary px-10"
-                onClick={() => void signOut()}
-              >
+              <button className="button-primary px-10" onClick={() => void signOut()}>
                 Wyloguj
               </button>
             </div>
