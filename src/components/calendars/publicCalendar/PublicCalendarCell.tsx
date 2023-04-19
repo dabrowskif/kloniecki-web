@@ -20,7 +20,7 @@ const PublicCalendarCell = (props: IPublicCalendarCellProps) => {
       disabled={cell.occupation !== "available"}
       onClick={() => handleCellClick(cell)}
     >
-      <div className="p-2 text-center">
+      <div className="whitespace-nowrap p-2 text-center">
         {Calendar.getHourOfDate(dateFrom)} - {Calendar.getHourOfDate(dateTo)}
       </div>
       <hr />

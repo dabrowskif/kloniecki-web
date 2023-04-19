@@ -7,6 +7,7 @@ import { type VisitsCalendar, type DateRange, type PublicCalendarCell } from "~/
 import ReservationForm from "./ReservationForm";
 import WeekPagination from "../../../calendars/CalendarPagination";
 import PublicCalendar from "~/components/calendars/publicCalendar/PublicCalendar";
+import PublicCalendarColumn from "~/components/calendars/publicCalendar/PublicCalendarColumn";
 
 const CalendarSection = () => {
   const [currentWeek, setCurrentWeek] = useState<DateRange>({
@@ -58,28 +59,26 @@ const CalendarSection = () => {
 
   return (
     <section id="kalendarz" className="bg-white p-10">
-      <div className="flex flex-col items-center">
-        <div className="w-9/12 ">
-          <WeekPagination currentWeek={currentWeek} changeCurrentWeek={changeCurrentWeek} />
-          <hr className="my-5  border-blue-500" />
-          {calendarColumns ? (
-            <PublicCalendar
-              contextValue={{
-                handleCellClick,
-                getCellColor,
-              }}
-              calendarColumns={calendarColumns}
-            />
-          ) : (
-            <>
-              <p className="text-center text-xl">Brak wolnych terminów.</p>
-              <p className="text-center">Mozesz skontaktować się ze mną osobiście, korzystając z formularza powyzej.</p>
-            </>
-          )}
-        </div>
-        <ReservationForm selectedCell={selectedCell} />
-        <div className="flex flex-col items-center justify-center space-y-4 align-middle"></div>
-      </div>
+      {/* <div className="flex divide-x overflow-auto">
+        {calendarColumns.map((column, i) => (
+          <PublicCalendarColumn key={i} calendarColumn={column} />
+        ))}
+      </div> */}
+      {/* <div className="flex flex-col items-center justify-center"> */}
+      {/* <div> */}
+      <WeekPagination currentWeek={currentWeek} changeCurrentWeek={changeCurrentWeek} />
+      <hr className="my-5  border-blue-500" />
+      <PublicCalendar
+        contextValue={{
+          handleCellClick,
+          getCellColor,
+        }}
+        calendarColumns={calendarColumns}
+      />
+      {/* </div> */}
+      <ReservationForm selectedCell={selectedCell} />
+      <div className="flex flex-col items-center justify-center space-y-4 align-middle"></div>
+      {/* </div> */}
     </section>
   );
 };

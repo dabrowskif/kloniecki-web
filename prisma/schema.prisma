@@ -52,7 +52,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
-  role          UserRole
+  role          UserRole  @default(USER)
 }
 
 model VerificationToken {
@@ -89,6 +89,7 @@ enum ConfirmationStatus {
 model VisitReservation {
   id                         String             @id @default(cuid())
   customerConfirmationStatus ConfirmationStatus @default(PENDING)
+  customerConfirmationToken  String             @unique
   ownerConfirmationStatus    ConfirmationStatus @default(CONFIRMED)
   name                       String
   phoneNumber                String

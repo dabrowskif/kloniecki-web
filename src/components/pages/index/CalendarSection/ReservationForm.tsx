@@ -48,10 +48,10 @@ const ReservationForm = (props: IReservationFormProps) => {
   });
 
   return (
-    <div className="mt-10 w-7/12">
-      <form onSubmit={handleSubmit} className="mb-5">
-        <div className="grid grid-cols-2 gap-5">
-          <div className="mb-6">
+    <div className="mt-10 flex justify-center">
+      <form onSubmit={handleSubmit} className="md:9/12 mb-5 w-full lg:w-7/12">
+        <div className="grid grid-cols-2 gap-1 md:gap-3">
+          <div className="col-span-2 mb-6 md:col-span-1">
             <label htmlFor="phoneNumber" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
               Imię i nazwisko *
             </label>
@@ -65,7 +65,7 @@ const ReservationForm = (props: IReservationFormProps) => {
               placeholder="Imię i nazwisko"
             />
           </div>
-          <div className="mb-6">
+          <div className="col-span-2 mb-6 md:col-span-1">
             <label htmlFor="phoneNumber" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
               Numer telefonu *
             </label>
@@ -79,7 +79,7 @@ const ReservationForm = (props: IReservationFormProps) => {
               placeholder="+48 500 500 500"
             />
           </div>
-          <div className="mb-6">
+          <div className="col-span-2 mb-6 md:col-span-1">
             <label htmlFor="email" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
               Email *
             </label>
@@ -93,7 +93,7 @@ const ReservationForm = (props: IReservationFormProps) => {
               required
             />
           </div>
-          <div className="mb-6">
+          <div className="col-span-2 mb-6 md:col-span-1">
             <label htmlFor="date" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
               Data *
             </label>

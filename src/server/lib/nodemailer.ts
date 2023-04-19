@@ -9,7 +9,6 @@ import { env } from "~/env.mjs";
 
 type MailOptions = {
   to: string;
-  from: string;
   subject: string;
   text?: string;
   html?: string;
@@ -28,12 +27,9 @@ class MailService {
 
   public async sendMail(options: MailOptions) {
     try {
-      await this.mailClient.sendMail(options);
+      await this.mailClient.sendMail({ ...options, from: "Kloniecki Osteopatia filip.dabrowski@protonmail.com" });
     } catch (error) {
-      throw new MailServiceError(
-        "There was an error while sending an email. Please try again later.",
-        { error }
-      );
+      throw new MailServiceError("There was an error while sending an email. Please try again later.", { error });
     }
   }
 }
