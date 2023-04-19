@@ -27,7 +27,7 @@ const PublicCalendar = (props: IPublicCalendarProps) => {
         <>
           <div className="md:hidden">
             <label htmlFor="day" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-              Wybierz dzień
+              Wybierz termin wizyty
             </label>
             <select
               id="day"
@@ -44,7 +44,7 @@ const PublicCalendar = (props: IPublicCalendarProps) => {
               {selectedColumn && <PublicCalendarColumn key={selectedColumn?.day} calendarColumn={selectedColumn} />}
             </div>
           </div>
-          <div className="hidden grid-cols-5 justify-center divide-x shadow-lg md:grid">
+          <div className="mx-auto hidden max-w-5xl grid-cols-5 divide-x  bg-red-500  shadow-lg md:grid">
             {calendarColumns.map((column, i) => (
               <PublicCalendarColumn key={i} calendarColumn={column} />
             ))}
