@@ -1,8 +1,15 @@
 import { type AvailableVisit, type VisitReservation } from "@prisma/client";
 import dayjs from "dayjs";
 import "dayjs/locale/pl";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
 import { DateFormats, type TimeRange } from "./types";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 dayjs.locale("pl");
+dayjs.tz.setDefault("Europe/Warsaw");
 
 export class Calendar {
   static getDays = () => {
