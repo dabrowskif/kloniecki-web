@@ -59,15 +59,12 @@ const CalendarSection = () => {
 
   return (
     <section id="kalendarz" className="bg-white p-10">
-      {/* <div className="flex divide-x overflow-auto">
-        {calendarColumns.map((column, i) => (
-          <PublicCalendarColumn key={i} calendarColumn={column} />
-        ))}
-      </div> */}
-      {/* <div className="flex flex-col items-center justify-center"> */}
-      {/* <div> */}
+      <div className="mx-auto mb-4 max-w-3xl text-center">
+        <h2 className="text-3xl font-semibold text-gray-800">Umów się na wizytę</h2>
+        <p className="mt-4 text-gray-600">Wybierz datę i wypełnij formularz rezerwacji</p>
+      </div>
       <WeekPagination currentWeek={currentWeek} changeCurrentWeek={changeCurrentWeek} />
-      <hr className="my-5  border-blue-500" />
+      <hr className="mx-auto  my-5 max-w-5xl border-blue-500" />
       <PublicCalendar
         contextValue={{
           handleCellClick,
@@ -75,10 +72,7 @@ const CalendarSection = () => {
         }}
         calendarColumns={calendarColumns}
       />
-      {/* </div> */}
       <ReservationForm selectedCell={selectedCell} />
-      <div className="flex flex-col items-center justify-center space-y-4 align-middle"></div>
-      {/* </div> */}
     </section>
   );
 };

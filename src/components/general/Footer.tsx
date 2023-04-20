@@ -14,10 +14,7 @@ const Footer = () => {
         referrerPolicy="no-referrer-when-downgrade"
       />
       <div className="bg-gray-100">
-        <h5 className="p-2 text-center">
-          Osteopatia i Fizjoterapia, Szymon Kloniecki, All RIghts Reserved 2023
-          ®
-        </h5>
+        <h5 className="p-2 text-center">Osteopatia i Fizjoterapia, Szymon Kloniecki, All Rights Reserved 2023 ®</h5>
       </div>
     </footer>
   );

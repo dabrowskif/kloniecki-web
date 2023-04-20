@@ -10,15 +10,10 @@ const ContactSection = () => {
     phoneNumber: "",
   });
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
   const [formSuccess, setFormSuccess] = useState("");
   const [formError, setFormError] = useState("");
 
-  const { mutate: sendInquiryForm } = api.inquiryForm.create.useMutation({
-    onMutate: () => {
-      setIsSubmitting(true);
-    },
+  const { mutate: sendInquiryForm, isLoading } = api.inquiryForm.create.useMutation({
     onSuccess: () => {
       setFormError("");
       setFormSuccess("Pomyślnie wysłano wiadomość!");
@@ -26,9 +21,6 @@ const ContactSection = () => {
     onError: () => {
       setFormSuccess("");
       setFormError("Wystąpił nieoczekiwany problem. Proszę - skontaktuj się ze mną bezpośrednio.");
-    },
-    onSettled: () => {
-      setIsSubmitting(false);
     },
   });
 
@@ -46,7 +38,7 @@ const ContactSection = () => {
     <section id="kontakt" className="bg-gray-100 p-10">
       <div className="mx-auto max-w-3xl text-center">
         <h2 className="text-3xl font-semibold text-gray-800">Skontaktuj się ze mną</h2>
-        <p className="mt-4 text-gray-600">Wypełnij formularz lub zapisz się na wizytę</p>
+        <p className="mt-4 text-gray-600">Wypełnij formularz kontaktowy</p>
       </div>
       <div className="grid grid-cols-1 gap-8 px-4 pt-12 sm:gap-4 sm:px-6 md:grid-cols-2 md:px-10 lg:px-20">
         <div className="flex flex-col items-center justify-center space-y-4 align-middle">
@@ -68,8 +60,8 @@ const ContactSection = () => {
             </div>
           </div>
         </div>
-        <div className="flex flex-col justify-center space-y-4 pt-5 align-middle md:items-center md:pt-0">
-          <form onSubmit={handleSubmit}>
+        <div className="flex flex-col justify-center space-y-4 pt-5 md:items-center md:pt-0">
+          <form onSubmit={handleSubmit} className="w-full md:w-9/12">
             <div className="grid grid-cols-2 gap-5">
               <div className="col-span-2 mb-6 sm:col-span-1">
                 <label htmlFor="email" className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
@@ -113,8 +105,8 @@ const ContactSection = () => {
                 placeholder="Zostaw wiadomość"
               ></textarea>
             </div>
-            <button type="submit" disabled={isSubmitting} className="button-primary mt-2 px-5">
-              {isSubmitting ? (
+            <button type="submit" disabled={isLoading} className="button-primary mt-2 px-5">
+              {isLoading ? (
                 <div className="flex">
                   <svg
                     aria-hidden="true"

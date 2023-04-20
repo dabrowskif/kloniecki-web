@@ -18,16 +18,25 @@ export const inquiryFormRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       const mailService = useMailService();
 
-      try {
-        await prisma.inquiryForm.create({
+      await prisma.inquiryForm
+        .create({
           data: {
             email: input.email,
             phoneNumber: input.phoneNumber,
             message: input.message,
           },
+        })
+        .catch((e) => {
+          console.log(e);
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: UNKNOWN_ERROR_FOR_USER,
+            cause: e,
+          });
         });
 
-        await mailService.sendMail({
+      await mailService
+        .sendMail({
           to: "filip.daabrowski@gmail.com",
           subject: `Nowe zapytanie od ${input.email}`,
           text: `Otrzymałeś nowe zapytanie od ${input.email}  Numer telefonu:${input.phoneNumber ? input.phoneNumber : ""} Wiadomość: ${
@@ -36,12 +45,7 @@ export const inquiryFormRouter = createTRPCRouter({
           html: `Otrzymałeś nowe zapytanie od <a href="mailto:${input.email}">${input.email}</a> <br /> Numer telefonu: ${
             input.phoneNumber ? input.phoneNumber : ""
           } <br/> <br /> ${input.message} `,
-        });
-      } catch (e) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: UNKNOWN_ERROR_FOR_USER,
-        });
-      }
+        })
+        .catch((e) => console.log(e));
     }),
 });

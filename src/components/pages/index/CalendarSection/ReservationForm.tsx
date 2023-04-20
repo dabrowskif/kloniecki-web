@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { api } from "~/utils/api";
 import { Calendar } from "~/utils/calendar";
 import { type PublicCalendarCell } from "~/utils/calendar/types";
@@ -12,12 +12,18 @@ const ReservationForm = (props: IReservationFormProps) => {
   const ctx = api.useContext();
   const [formSuccess, setFormSuccess] = useState("");
   const [formError, setFormError] = useState("");
-
+  const initialFormData = {
+    email: "",
+    message: "",
+    phoneNumber: "",
+    name: "",
+  };
   const { mutate: createVisitReservation, isLoading: isSubmitting } = api.visitReservation.create.useMutation({
     onSuccess: () => {
       setFormError("");
       setFormSuccess("Pomyślnie zarezerowano! Proszę, oczekuj wiadomości potwierdzającej rezerwację.");
       void ctx.calendar.getPublicCalendar.invalidate();
+      setFormData(initialFormData);
     },
     onError: (e) => {
       setFormSuccess("");
@@ -40,15 +46,10 @@ const ReservationForm = (props: IReservationFormProps) => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
   };
 
-  const [formData, setFormData] = useState({
-    email: "",
-    message: "",
-    phoneNumber: "",
-    name: "",
-  });
+  const [formData, setFormData] = useState(initialFormData);
 
   return (
-    <div className="mt-10 flex justify-center">
+    <div className="mx-auto mt-10 flex flex-col items-center">
       <form onSubmit={handleSubmit} className="md:9/12 mb-5 w-full lg:w-7/12">
         <div className="grid grid-cols-2 gap-1 md:gap-3">
           <div className="col-span-2 mb-6 md:col-span-1">
