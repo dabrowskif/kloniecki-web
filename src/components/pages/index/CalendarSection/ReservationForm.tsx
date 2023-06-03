@@ -23,7 +23,7 @@ const ReservationForm = (props: IReservationFormProps) => {
       setFormError("");
       setFormSuccess("Pomyślnie zarezerowano! Proszę, oczekuj wiadomości potwierdzającej rezerwację.");
       void ctx.calendar.getPublicCalendar.invalidate();
-      setFormData(initialFormData);
+      // setFormData(initialFormData);
     },
     onError: (e) => {
       setFormSuccess("");

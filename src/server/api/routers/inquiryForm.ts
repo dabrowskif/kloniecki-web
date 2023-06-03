@@ -1,5 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
+import { env } from "~/env.mjs";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { prisma } from "~/server/db";
@@ -37,7 +38,7 @@ export const inquiryFormRouter = createTRPCRouter({
 
       await mailService
         .sendMail({
-          to: "filip.daabrowski@gmail.com",
+          to: env.OWNER_EMAIL,
           subject: `Nowe zapytanie od ${input.email}`,
           text: `Otrzymałeś nowe zapytanie od ${input.email}  Numer telefonu:${input.phoneNumber ? input.phoneNumber : ""} Wiadomość: ${
             input.message

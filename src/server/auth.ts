@@ -1,11 +1,5 @@
 import { type GetServerSidePropsContext } from "next";
-import {
-  getServerSession,
-  type NextAuthOptions,
-  type DefaultSession,
-  type TokenSet,
-  type Session,
-} from "next-auth";
+import { getServerSession, type NextAuthOptions, type DefaultSession, type TokenSet, type Session } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { env } from "~/env.mjs";
@@ -90,10 +84,7 @@ export const authOptions: NextAuthOptions = {
   },
 };
 
-export const getServerAuthSession = (ctx: {
-  req: GetServerSidePropsContext["req"];
-  res: GetServerSidePropsContext["res"];
-}) => {
+export const getServerAuthSession = (ctx: { req: GetServerSidePropsContext["req"]; res: GetServerSidePropsContext["res"] }) => {
   return getServerSession(ctx.req, ctx.res, authOptions);
 };
 
@@ -104,11 +95,7 @@ const refreshGoogleAccessToken = async (session: Session) => {
     where: { userId, provider: "google" },
   });
 
-  if (
-    google?.expires_at &&
-    google?.refresh_token &&
-    google.expires_at * 1000 < Date.now()
-  ) {
+  if (google?.expires_at && google?.refresh_token && google.expires_at * 1000 < Date.now()) {
     try {
       const response = await fetch("https://oauth2.googleapis.com/token", {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
